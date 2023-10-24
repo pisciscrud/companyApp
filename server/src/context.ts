@@ -1,17 +1,18 @@
 import { CreateExpressContextOptions } from '@trpc/server/adapters/express'
 import {prisma} from './prisma'
 
-export async function createInnerTRPCContext(opts?: any) {
+interface InnerTRPCContext {
+  prisma: typeof prisma;
+}
+
+export async function createInnerTRPCContext(opts?: any) :Promise<InnerTRPCContext>
+{
     return {
       prisma,
-      companies: prisma.companies,
-      departments: prisma.departments,
-      employees: prisma.employees,
-      roles: prisma.roles,
       ...opts,
     };
   }
-export const  createContext = async (opts?: CreateExpressContextOptions) => {
+export const  createContext = async (opts?: CreateExpressContextOptions) : Promise<InnerTRPCContext & { req?: any }> => {
 
     const innerContext = await createInnerTRPCContext({
         req: opts?.req,
