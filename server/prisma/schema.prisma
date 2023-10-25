@@ -7,12 +7,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id Int @id @default(autoincrement())
+
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+
+  email    String @unique
+  password String
+
+  @@map("users")
+}
+
 model Company {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
+  id Int @id @default(autoincrement())
+
+  name        String @db.VarChar(255)
+  description String @db.VarChar(255)
 
   departments Department[]
   createdAt   DateTime?    @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt   DateTime?    @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
 
   @@map("companies")
 }
@@ -27,7 +42,7 @@ model Department {
   companyId Int?
 
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
 
   employees Employee[]
 
@@ -43,20 +58,15 @@ model Employee {
   department   Department? @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   departmentId Int?        @map("department_id")
 
-  role   Role? @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_role")
-  roleId Int?  @map("role_id")
+  position Position @default(EMPLOYEE)
 
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
-  updatedAt DateTime? @default(now()) @map("updated_at") @db.Timestamp(6)
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
 
   @@map("employees")
 }
 
-model Role {
-  id   Int    @id @default(autoincrement())
-  name String @db.VarChar(255)
-
-  employees Employee[]
-
-  @@map("roles")
+enum Position {
+  HEAD
+  EMPLOYEE
 }

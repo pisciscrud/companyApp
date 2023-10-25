@@ -17,11 +17,11 @@ export class CompanyController {
           result,
         },
       };
-    } catch (e: any) {
-      console.log(e);
+    } catch (error: any) {
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: `[CompanyController getAll] ${e?.message || e?.stack}`,
+        message: `[CompanyController getAll] ${error?.message || error?.stack}`,
       });
     }
   }
@@ -42,7 +42,7 @@ export class CompanyController {
         },
       };
     } catch (error: any) {
-      console.log(error);
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: `[CompanyController addCompany] ${
@@ -71,7 +71,7 @@ export class CompanyController {
         },
       };
     } catch (error: any) {
-      console.log(error);
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: `[CompanyController updateCompany] ${
@@ -89,7 +89,31 @@ export class CompanyController {
         data: null,
       };
     } catch (error: any) {
-      console.log(error);
+      if (error instanceof TRPCError) throw error;
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `[CompanyController deleteCompany] ${
+          error?.message || error?.stack
+        }`,
+      });
+    }
+  }
+
+  static async findInfoAboutCompany({
+    paramsInput,
+  }: {
+    paramsInput: ParamsInput;
+  }) {
+    try {
+      const result = await CompanyService.getInfoAboutCompany(
+        paramsInput.companyId
+      );
+      return {
+        status: "success",
+        data: result,
+      };
+    } catch (error: any) {
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: `[CompanyController deleteCompany] ${

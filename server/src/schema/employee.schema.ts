@@ -1,32 +1,34 @@
-import { boolean, number, object, string, TypeOf } from 'zod';
+import { Position } from "@prisma/client";
+import { z, number, object, string, TypeOf } from "zod";
 
 export const CreateEmployeeSchema = object({
   firstName: string({
-    required_error: 'Name is required',
+    required_error: "Name is required",
   }),
   lastName: string({
-    required_error: 'Last name is required',
+    required_error: "Last name is required",
   }),
-  departamentId: number(
-    {
-        required_error: 'Departament is required',
-    }
-  ),
+  departmentId: number({
+    required_error: "Departament is required",
+  }),
+  position: z.enum([Position.EMPLOYEE, Position.HEAD]),
 });
 
-export const params = object({
+export const employeeParams = object({
   idEmployee: number(),
 });
 
 export const paramName = object({
-    name: string(),
-  });
+  name: string(),
+});
 
 export const UpdateEmployeeSchema = object({
-  params,
+  params: employeeParams,
   body: object({
     firstName: string(),
     lastName: string(),
+    position: z.enum([Position.EMPLOYEE, Position.HEAD]),
+    departmentId: number(),
   }).partial(),
 });
 
@@ -36,7 +38,7 @@ export const filterQuery = object({
 });
 
 export type CreateEmployeeInput = TypeOf<typeof CreateEmployeeSchema>;
-export type ParamsInput = TypeOf<typeof params>;
-export type ParamInputName = TypeOf<typeof paramName >;
-export type UpdateEmployeeInput = TypeOf<typeof UpdateEmployeeSchema>['body'];
+export type ParamsInput = TypeOf<typeof employeeParams>;
+export type ParamInputName = TypeOf<typeof paramName>;
+export type UpdateEmployeeInput = TypeOf<typeof UpdateEmployeeSchema>["body"];
 export type FilterQueryInput = TypeOf<typeof filterQuery>;

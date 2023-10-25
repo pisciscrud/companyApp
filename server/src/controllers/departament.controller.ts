@@ -3,7 +3,7 @@ import {
   CreateDepartamentInput,
   ParamsInput,
   UpdateDepartamentInput,
-  ParamInput
+  ParamInput,
 } from "../schema/departament.schema";
 
 import { DepartamentService } from "../services/departament.service";
@@ -18,37 +18,63 @@ export class DepartamentController {
           result,
         },
       };
-    } catch (e: any) {
-      console.log(e);
+    } catch (error: any) {
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: `[DepartamentController getAll] ${e?.message || e?.stack}`,
+        message: `[DepartamentController getAll] ${error?.message || error?.stack}`,
       });
     }
   }
 
-  static async getInfoAboutDepartament({ paramsInput }: { paramsInput: ParamsInput})
-  {
-
-  }
-
-  static async getDepartamentsOfCompany({ paramsInput }: { paramsInput: ParamInput})
-  {
-    try 
-    {
-      const result = await DepartamentService.getAllDepartamentsOfCompany(paramsInput )
+  static async getInfoAboutDepartament({
+    paramsInput,
+  }: {
+    paramsInput: ParamsInput;
+  }) {
+    try {
+      const result = await DepartamentService.getInfoAboutDepartament(
+        paramsInput.idDepartament
+      );
       return {
         status: "success",
         data: {
           result,
         },
       };
-    }
-    catch (e: any) {
-      console.log(e);
+    } catch (error: any) {
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: `[DepartamentController getDepartamentsOfCompany] ${e?.message || e?.stack}`,
+        message: `[DepartamentController getInfoAboutDepartament] ${
+          error?.message || error?.stack
+        }`,
+      });
+    }
+  }
+
+  static async getDepartamentsOfCompany({
+    paramsInput,
+  }: {
+    paramsInput: ParamInput;
+  }) {
+    try {
+      const result = await DepartamentService.getAllDepartamentsOfCompany(
+        paramsInput.idCompany
+      );
+      return {
+        status: "success",
+        data: {
+          result,
+        },
+      };
+    } catch (error: any) {
+      if (error instanceof TRPCError) throw error;
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `[DepartamentController getDepartamentsOfCompany] ${
+          error?.message || error?.stack
+        }`,
       });
     }
   }
@@ -56,21 +82,21 @@ export class DepartamentController {
   static async findFiveLargest({ paramsInput }: { paramsInput: ParamInput }) {
     try {
       const result =
-        await DepartamentService.findFiveLargestDepartamentsOfCompany({
-          id: paramsInput
-        });
+        await DepartamentService.findFiveLargestDepartamentsOfCompany(
+          paramsInput.idCompany
+        );
       return {
         status: "success",
         data: {
           result,
         },
       };
-    } catch (e: any) {
-      console.log(e);
+    } catch (error: any) {
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: `[DepartamentController findFiveLargest] ${
-          e?.message || e?.stack
+          error?.message || error?.stack
         }`,
       });
     }
@@ -85,12 +111,12 @@ export class DepartamentController {
           result,
         },
       };
-    } catch (e: any) {
-      console.log(e);
+    } catch (error: any) {
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: `[DepartamentController addDepartament] ${
-          e?.message || e?.stack
+          error?.message || error?.stack
         }`,
       });
     }
@@ -105,7 +131,7 @@ export class DepartamentController {
   }) {
     try {
       const result = await DepartamentService.updateDepartament(
-        paramsInput,
+        paramsInput.idDepartament,
         input
       );
       return {
@@ -114,12 +140,12 @@ export class DepartamentController {
           result,
         },
       };
-    } catch (e: any) {
-      console.log(e);
+    } catch (error: any) {
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: `[DepartamentController updateDepartament] ${
-          e?.message || e?.stack
+          error?.message || error?.stack
         }`,
       });
     }
@@ -131,15 +157,13 @@ export class DepartamentController {
     paramsInput: ParamsInput;
   }) {
     try {
-      await DepartamentService.deleteDepartament({
-        id: paramsInput.idDepartament,
-      });
-    } catch (e: any) {
-      console.log(e);
+      await DepartamentService.deleteDepartament(paramsInput.idDepartament);
+    } catch (error: any) {
+      if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: `[DepartamentController deleteDepartament] ${
-          e?.message || e?.stack
+          error?.message || error?.stack
         }`,
       });
     }

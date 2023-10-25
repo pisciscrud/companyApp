@@ -4,7 +4,7 @@ export const CreateDepartamentSchema = object({
   name: string({
     required_error: 'Name is required',
   }),
-  company_id: number({
+  companyId: number({
     required_error: 'Company is required',
   }),
   description: string({
@@ -18,7 +18,7 @@ export const paramDepartament = object({
 
 export const paramCompany = object(
   {
-    isCompany:number()
+    idCompany:number()
   }
 )
 

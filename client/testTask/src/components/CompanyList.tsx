@@ -1,16 +1,37 @@
-import React from 'react';
-import { trpc } from '../utils/trpcClient';
+import React, { useState } from "react";
+import { trpc } from "../utils/trpcClient";
 
 export const CompanyList: React.FC = () => {
-  const fetchUser = async () => {
-    const compamies = await trpc.company.addCompany.mutate;
-      
-    console.log(compamies.data);
+  const [name, setName] = useState(null);
+  const [description, setDescription] = useState(null);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    try {
+      trpc.company.addCompany.mutate({ name: name, description: description });
+      event.preventDefault();
+    } catch (e) {
+      console.log(e);
+    }
   };
-
-  React.useEffect(() => {
-    fetchUser();
-  }, []);
-
-  return <></>;
-}
+  return (
+    <>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="name">Name:</label>
+        <input
+          id="name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <label htmlFor="description">Description: </label>
+        <input
+          id="description"
+          type="text"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <button type="submit">Create</button>
+      </form>
+    </>
+  );
+};
