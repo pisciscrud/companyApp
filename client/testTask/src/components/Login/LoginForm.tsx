@@ -4,6 +4,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Form, Button, Container } from "react-bootstrap";
 import { loginUser } from "../../api/auth.api";
 import styles from "./login.module.css";
+import { useNavigate } from "react-router";
 
 interface LoginFormProps {
   email: string;
@@ -17,11 +18,14 @@ export const Login: React.FC = () => {
     handleSubmit,
     formState: { isSubmitting },
   } = useForm<LoginFormProps>();
+
+  const navigate = useNavigate();
   const onSubmit: SubmitHandler<LoginFormProps> = async (
     formData: LoginFormProps
   ) => {
     try {
       await loginUser(formData);
+      navigate('/companies');
       
     } catch (err) {
       console.error("Request error:", err);

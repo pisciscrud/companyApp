@@ -1,0 +1,19 @@
+.headerContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.deleteButton {
+    border:none;
+    align-items: center;
+    background-color: none;
+    justify-content: center;
+    text-align: center;
+}
+.addEmployeeButton
+{
+    background-color:rgb(19, 38, 98);
+    border:none;
+    margin-top:15px
+}

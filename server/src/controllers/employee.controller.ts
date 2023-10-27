@@ -6,6 +6,7 @@ import {
   ParamsInput,
   UpdateEmployeeInput,
 } from "../schema/employee.schema";
+import { ParamsInputCompany } from "../schema/company.schema";
 
 export class EmployeeController {
   static async getAll() {
@@ -142,6 +143,32 @@ export class EmployeeController {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: `[EmployeeController findInfoAboutEmployee] ${
+          error?.message || error?.stack
+        }`,
+      });
+    }
+  }
+
+  static async getEmployeesOfCompany({
+    paramsInput,
+  }: {
+    paramsInput: ParamsInputCompany;
+  }) {
+    try 
+    {
+      const result = await EmployeeService.getEmployeesOfCompany(paramsInput.companyId);
+      return {
+        status: "success",
+        data: {
+          result,
+        },
+      };
+    }
+    catch (error: any) {
+      if (error instanceof TRPCError) throw error;
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `[EmployeeController getEmployeesOfCompany] ${
           error?.message || error?.stack
         }`,
       });

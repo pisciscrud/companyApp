@@ -3,7 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addNewCompany } from "../../api/companies.api";
+import { updateDepartament } from "../../api/departaments.api";
 
 interface AddCompanyModalProps {
   showModal: boolean;
@@ -30,6 +30,8 @@ const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
   name,
   description,
 }) => {
+  console.log(name);
+  console.log(description);
   const {
     register,
     handleSubmit,

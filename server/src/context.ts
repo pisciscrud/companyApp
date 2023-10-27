@@ -11,7 +11,8 @@ export async function createInnerTRPCContext(opts?: any) {
 }
 
 export const createContext = async (opts?: CreateExpressContextOptions) => {
-   function getUserFromHeader() {
+  function getUserFromHeader() {
+    console.log(opts?.req?.headers);
     if (opts?.req?.headers.authorization) {
       const token = opts?.req.headers.authorization.split(" ")[1];
       return token;
@@ -20,7 +21,7 @@ export const createContext = async (opts?: CreateExpressContextOptions) => {
   }
   const innerContext = await createInnerTRPCContext({
     req: opts?.req,
-    token:  getUserFromHeader(),
+    token: getUserFromHeader(),
   });
 
   return {

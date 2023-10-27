@@ -24,6 +24,7 @@ export const getAllDepartaments = async (idCompany: number) => {
 export const deleteDepartament = async (idDepartament: number) => {
   try {
     await trpc.departament.deleteDepartament.mutate({
+  
       idDepartament: +idDepartament,
     });
   } catch (e) {

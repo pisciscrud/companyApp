@@ -6,6 +6,7 @@ import {
   paramName,
 } from "../schema/employee.schema";
 import { baseProcedure, router, adminProcedure } from "../trpc";
+import { companyParams } from "../schema/company.schema";
 
 export const employeeRouter = router({
   allEmployees: adminProcedure.query(EmployeeController.getAll),
@@ -20,12 +21,12 @@ export const employeeRouter = router({
         input: input.body,
       })
     ),
-  deleteEmployee: adminProcedure
+  deleteEmployee: baseProcedure
     .input(employeeParams)
     .mutation(({ input }) =>
       EmployeeController.deleteEmployee({ paramsInput: input })
     ),
-  emplyeesByName: adminProcedure
+  emplyeesByName: baseProcedure
     .input(paramName)
     .query(({ input }) =>
       EmployeeController.findEmployeesByName({ paramInput: input })
@@ -35,4 +36,5 @@ export const employeeRouter = router({
     .query(({ input }) =>
       EmployeeController.findInfoAboutEmployee({ paramsInput: input })
     ),
+    getEmployeesOfCompany: baseProcedure.input(companyParams).query(({input})=>EmployeeController.getEmployeesOfCompany({paramsInput:input}))
 });

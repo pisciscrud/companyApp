@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { getAllCompanies, deleteCompany } from "../../api/companies.api";
-import { Form, Button, Container } from "react-bootstrap";
 import styles from "./company.module.css";
 import CompanyItem from "../../components/CompanyItem/company.item";
 import { PlusCircle } from "react-bootstrap-icons";
 import AddCompanyModal from "../../components/AddCompanyModal/AddCompanyModal";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 
 const CompaniesPage: React.FC = () => {
   const [companies, setCompanies] = useState([]);

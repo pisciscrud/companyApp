@@ -105,6 +105,9 @@ export class EmployeeService {
           mode: "insensitive",
         },
       },
+      include: {
+        department: true,
+      },
     });
     return findedEmployees;
   }
@@ -126,5 +129,19 @@ export class EmployeeService {
       },
     });
     return findedEmployees;
+  }
+
+  static async getEmployeesOfCompany(id: number) {
+    const employees = await prisma.employee.findMany({
+      where: {
+        department: {
+          companyId: id,
+        },
+      },
+      include: {
+        department: true,
+      },
+    });
+    return employees;
   }
 }

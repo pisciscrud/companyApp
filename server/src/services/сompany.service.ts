@@ -69,13 +69,14 @@ export class CompanyService {
       },
     });
   }
-  static async getInfoAboutCompany(id: any) {
-    const findedCompany = await prisma.company.findFirst({
+  static async getInfoAboutCompany(id: number) {
+    const foundCompany = await prisma.company.findFirst({
       where: {
         id: id,
       },
+     
     });
-    if (!findedCompany) {
+    if (!foundCompany) {
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: `[CompanyService getInfoAboutCompany] Provided company hasn't exist`,

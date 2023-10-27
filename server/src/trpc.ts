@@ -10,8 +10,8 @@ const isAdmin = middleware(async (opts) => {
   try {
     const { ctx } = opts;
 
-    const token = ctx.token; // откуда то из контекста достать токен
-     console.log(token)
+    const token = ctx.token; 
+    console.log(token);
     const payload = AuthService.verifyToken(token);
     await UserService.getById(payload.id);
 

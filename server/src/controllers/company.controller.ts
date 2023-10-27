@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { CompanyService } from "../services/сompany.service";
 import {
   CreateCompanyInput,
-  ParamsInput,
+  ParamsInputCompany,
   UpdateCompanyInput,
 } from "../schema/company.schema";
 
@@ -56,7 +56,7 @@ export class CompanyController {
     paramsInput,
     input,
   }: {
-    paramsInput: ParamsInput;
+    paramsInput: ParamsInputCompany;
     input: UpdateCompanyInput;
   }) {
     try {
@@ -81,7 +81,7 @@ export class CompanyController {
     }
   }
 
-  static async deleteCompany({ paramsInput }: { paramsInput: ParamsInput }) {
+  static async deleteCompany({ paramsInput }: { paramsInput: ParamsInputCompany }) {
     try {
       await CompanyService.deleteCompany(paramsInput.companyId);
       return {
@@ -102,7 +102,7 @@ export class CompanyController {
   static async findInfoAboutCompany({
     paramsInput,
   }: {
-    paramsInput: ParamsInput;
+    paramsInput: ParamsInputCompany;
   }) {
     try {
       const result = await CompanyService.getInfoAboutCompany(
@@ -122,4 +122,5 @@ export class CompanyController {
       });
     }
   }
+
 }
