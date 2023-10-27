@@ -54,7 +54,7 @@ export class DepartamentService {
   }
 
   static async getAllDepartamentsOfCompany(id: number) {
-    try {
+   
       const departaments = await prisma.department.findMany({
         where: {
           companyId: id,
@@ -64,20 +64,22 @@ export class DepartamentService {
           name: true,
           description: true,
           employees: true,
+          createdAt: true,
+          updatedAt: true,
         },
       });
-      console.log(departaments);
+      
       return departaments;
-    } catch (error) {}
+    
   }
 
   static async deleteDepartament(id: number) {
-    const findedDepartament = await prisma.department.findFirst({
+    const foundDepartament = await prisma.department.findFirst({
       where: {
         id: id,
       },
     });
-    if (!findedDepartament) {
+    if (!foundDepartament) {
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: `[DepartamentService deleteDepartament] Provided departament han't exist`,
@@ -91,12 +93,12 @@ export class DepartamentService {
   }
 
   static async updateDepartament(id: number, dto: UpdateDepartamentDTO) {
-    const findedDepartament = await prisma.department.findFirst({
+    const foundDepartament = await prisma.department.findFirst({
       where: {
         id: id,
       },
     });
-    if (!findedDepartament) {
+    if (!foundDepartament) {
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: `[DepartamentService updateDepartament] Provided departament han't exist`,
@@ -121,18 +123,18 @@ export class DepartamentService {
   }
 
   static async getInfoAboutDepartament(id: number) {
-    const findedDepartament = await prisma.department.findFirst({
+    const foundDepartament = await prisma.department.findFirst({
       where: {
         id: id,
       },
     });
-    if (!findedDepartament) {
+    if (!foundDepartament) {
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: `[DepartamentService getInfoAboutDepartament] Provided departament han't exist`,
       });
     }
-    const findedCompany = await prisma.department.findFirst({
+    const foundCompany = await prisma.department.findFirst({
       where: {
         id: id,
       },
@@ -140,6 +142,6 @@ export class DepartamentService {
         employees: true,
       },
     });
-    return findedCompany;
+    return foundCompany;
   }
 }

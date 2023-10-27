@@ -1,0 +1,14 @@
+.deleteButton {
+    border:none;
+    align-items: center;
+    background-color: none;
+    justify-content: center;
+    text-align: center;
+}
+.updateButton {
+    border:none;
+    align-items: center;
+    background-color: none;
+    justify-content: center;
+    text-align: center;
+}

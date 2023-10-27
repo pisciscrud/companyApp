@@ -1,36 +1,27 @@
-import react, { useState, FC } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import react, { useState, FC } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {  LoginPage, DashboardPage, CompaniesPage, MainPage, DepartamentPage, EmployeePage} from  "./pages/index"
 
-import { httpBatchLink, createTRPCProxyClient } from '@trpc/client';
-
-import { QueryClient, QueryClientProvider } from 'react-query';
-const BACKEND_URL = "http://localhost:3000/trpc";
-import { trpc } from './utils/trpcClient';
-import  { CompanyList } from './components/CompanyList'
-
-
-function App() : FC  {
-
-//   const [queryClient] = useState(() => new QueryClient());
-//   const [trpcClient] = useState(() =>
-//   trpc.createTRPCProxyClient({
-//     links: [
-//       httpBatchLink({
-//         url: BACKEND_URL,
-//       }),
-//     ],
-//   }),
-// );
-
+function App(): FC {
   return (
     // <trpc.Provider client={trpcClient} queryClient={queryClient}>
     // <QueryClientProvider client={queryClient}>
-       <CompanyList/>
-  //   </QueryClientProvider>
-  // </trpc.Provider>
-  )
+    // <LoginPage/>
+    <Router>
+      <Routes>
+        <Route path="login" element={<LoginPage/>}></Route>
+        <Route path="main/:id" element={<MainPage/>}>
+          <Route path='dashboard' element={<DashboardPage/>}></Route>
+          <Route path='employees' element={<EmployeePage/>}></Route>
+          <Route path='departaments' element={<DepartamentPage/>}></Route>
+        </Route>
+        <Route path="/companies" element={<CompaniesPage/>}></Route>
+      </Routes>
+    </Router>
+    //   </QueryClientProvider>
+    // </trpc.Provider>
+  );
 }
 
 export default App;

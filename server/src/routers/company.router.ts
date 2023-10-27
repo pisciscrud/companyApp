@@ -7,8 +7,8 @@ import {
 import { baseProcedure, router, adminProcedure } from "../trpc";
 
 export const companyRouter = router({
-  allCompanies: adminProcedure.query(CompanyController.getAll),
-  addCompany: adminProcedure
+  allCompanies: baseProcedure.query(CompanyController.getAll),
+  addCompany: baseProcedure
     .input(CreateCompanySchema)
     .mutation(({ input, ctx }) => CompanyController.addCompany({ input, ctx })),
   updateCompany: adminProcedure
@@ -19,7 +19,7 @@ export const companyRouter = router({
         input: input.body,
       })
     ),
-  deleteCompany: adminProcedure
+  deleteCompany: baseProcedure
     .input(companyParams)
     .mutation(({ input }) =>
       CompanyController.deleteCompany({ paramsInput: input })

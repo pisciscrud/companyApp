@@ -1,0 +1,30 @@
+.headerCompany {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  font-weight: bold;
+  color: aliceblue;
+  background-color: rgb(19, 38, 98);
+  width: 100vw;
+  padding: 30px;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 20px;
+}
+
+.icon {
+  width: 48px; /* Установите нужный размер иконки */
+  height: 48px;
+  margin:  50px;
+}
+
+.addButton {
+    border:none;
+    background-color: white;
+
+}

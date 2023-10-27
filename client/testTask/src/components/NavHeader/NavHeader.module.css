@@ -1,0 +1,17 @@
+.navHeader {
+  background-color: #090852;
+  flex-direction: column;
+  justify-content: center;
+  /* align-items: center;  */
+  width: 200px;
+  /* text-align: center; */
+  height: 100vh;
+  color: white;
+  position: fixed;
+}
+.link {
+  margin-left: 10px;
+  height: 50px;
+  font-size: 20px;
+  font-weight: bold;
+}
