@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-
-import NavHeader from "../../components/NavHeader/NavHeader";
+import { NavHeader } from "../../components/index";
 import { Outlet } from "react-router-dom";
 import styles from "./MainPage.module.css";
 

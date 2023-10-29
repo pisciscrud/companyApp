@@ -1,5 +1,5 @@
 // Login.tsx
-import React from "react";
+
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Form, Button, Container } from "react-bootstrap";
 import { loginUser } from "../../api/auth.api";
@@ -11,8 +11,7 @@ interface LoginFormProps {
   password: string;
 }
 
-export const Login: React.FC = () => {
-  //const [submittedValues, setSubmittedValues] = useState('');
+ const Login: React.FC = () => {
   const {
     register,
     handleSubmit,
@@ -25,8 +24,7 @@ export const Login: React.FC = () => {
   ) => {
     try {
       await loginUser(formData);
-      navigate('/companies');
-      
+      navigate("/companies");
     } catch (err) {
       console.error("Request error:", err);
     }
@@ -35,8 +33,11 @@ export const Login: React.FC = () => {
   return (
     <>
       <Container className={styles.mycontainer}>
-        <Form onSubmit={handleSubmit(onSubmit)} className={styles.formContainer}>
-          <Form.Group  controlId="formBasicEmail">
+        <Form
+          onSubmit={handleSubmit(onSubmit)}
+          className={styles.formContainer}
+        >
+          <Form.Group controlId="formBasicEmail">
             <Form.Label>Email address</Form.Label>
             <Form.Control placeholder="email" {...register("email")} />
           </Form.Group>
@@ -48,7 +49,11 @@ export const Login: React.FC = () => {
               {...register("password")}
             />
           </Form.Group>
-          <Button type="submit" className={styles.button} disabled={isSubmitting}>
+          <Button
+            type="submit"
+            className={styles.button}
+            disabled={isSubmitting}
+          >
             Submit
           </Button>
         </Form>
@@ -56,3 +61,5 @@ export const Login: React.FC = () => {
     </>
   );
 };
+
+export default Login;

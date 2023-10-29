@@ -1,30 +1,28 @@
-import React from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Form, Button, Container } from "react-bootstrap";
 import styles from "./CompanyItem.module.css";
 import { Trash } from "react-bootstrap-icons";
-
+import { Company } from "../../shared/interfaces/company";
 
 interface CompanyItemProps {
-  company: {
-    name: string;
-    description: string;
-    createdAt: string;
-    id: number;
-  };
+  company: Company;
+  onDelete: (id:number) => void;
+  onClick: (id:number) => void;
 }
 
-const CompanyItem: React.FC<CompanyItemProps> = ({ company, onDelete, onClick }) => {
+const CompanyItem: React.FC<CompanyItemProps> = ({
+  company,
+  onDelete,
+  onClick,
+}) => {
   const { name, description, createdAt, id } = company;
 
   const handleDelete = () => {
+    if(!id) return;
     onDelete(id);
   };
-  const handleOpenCompany = async() =>
-  { 
-    onClick(id)
-
-  }
+  const handleOpenCompany = async () => {
+    if(!id) return;
+    onClick(id);
+  };
   const formattedDate = new Date(createdAt).toLocaleString();
   return (
     <div className={styles.companyCard}>
@@ -32,7 +30,9 @@ const CompanyItem: React.FC<CompanyItemProps> = ({ company, onDelete, onClick })
       <p>Description: {description}</p>
       <p>Created at: {formattedDate}</p>
       <div>
-        <button className={styles.deleteButton} onClick={handleOpenCompany}>Get all info</button>
+        <button className={styles.deleteButton} onClick={handleOpenCompany}>
+          Get all info
+        </button>
         <button className={styles.deleteButton} onClick={handleDelete}>
           <Trash />
         </button>

@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -14,13 +13,11 @@ const schema = z.object({
   name: z
     .string()
     .min(2, { message: "Name of company is too short" })
-    .max(20, "Name of company is too long")
-    .nonempty("Name is required"),
+    .max(20, "Name of company is too long"),
   description: z
     .string()
     .min(2, { message: "Description of company is too short" })
-    .max(80, "Description of company is too long")
-    .nonempty("Description is required"),
+    .max(80, "Description of company is too long"),
 });
 type FormSchema = z.infer<typeof schema>;
 
@@ -31,7 +28,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({
   const {
     register,
     handleSubmit,
-    setFocus,
+    resetField,
     formState: { isSubmitting, errors, isDirty },
   } = useForm<FormSchema>({ resolver: zodResolver(schema) });
 
@@ -41,20 +38,21 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({
       console.log(validationResult);
       if (validationResult.success) {
         await addNewCompany(formData);
-        handleClose();
+        hadleCloseModal();
       }
     } catch (err) {
-      // Обработка ошибок, если запрос не удался
       console.error("Request error:", err);
     }
   };
 
-//   useEffect(() => {
-//     setFocus("name");
-//   }, []);
+  const hadleCloseModal = () => {
+    resetField("name");
+    resetField("description");
+    handleClose();
+  };
 
   return (
-    <Modal show={showModal} onHide={handleClose}>
+    <Modal show={showModal} onHide={hadleCloseModal}>
       <Modal.Header closeButton>
         <Modal.Title>Add new company</Modal.Title>
       </Modal.Header>

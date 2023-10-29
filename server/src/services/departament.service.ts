@@ -54,23 +54,21 @@ export class DepartamentService {
   }
 
   static async getAllDepartamentsOfCompany(id: number) {
-   
-      const departaments = await prisma.department.findMany({
-        where: {
-          companyId: id,
-        },
-        select: {
-          id: true,
-          name: true,
-          description: true,
-          employees: true,
-          createdAt: true,
-          updatedAt: true,
-        },
-      });
-      
-      return departaments;
-    
+    const departaments = await prisma.department.findMany({
+      where: {
+        companyId: id,
+      },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        employees: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    return departaments;
   }
 
   static async deleteDepartament(id: number) {
@@ -93,6 +91,7 @@ export class DepartamentService {
   }
 
   static async updateDepartament(id: number, dto: UpdateDepartamentDTO) {
+    console.log(id,dto)
     const foundDepartament = await prisma.department.findFirst({
       where: {
         id: id,
@@ -112,6 +111,7 @@ export class DepartamentService {
         ...dto,
       },
     });
+    console.log("updated", updateDepartament);
     return updateDepartament;
   }
 

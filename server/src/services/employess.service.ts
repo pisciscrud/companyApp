@@ -58,17 +58,37 @@ export class EmployeeService {
     id: number,
     dto: UpdateEmployeeDTO
   ): Promise<Employee> {
-    const findedEmployee = await prisma.employee.findFirst({
+    const foundEmployee = await prisma.employee.findFirst({
       where: {
         id: id,
       },
     });
-    if (!findedEmployee)
+    if (!foundEmployee)
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: `[EmployeeService updateEmployee] employee doesn't exist`,
       });
+    const department = await prisma.department.findUnique({
+      where: { id: dto.departmentId },
+    });
 
+    if (!department)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: `[EmployeeService addNewEmployee] Department ID provided has not exists`,
+      });
+
+    if (dto.position === Position.HEAD) {
+      const headOfDepartament = await prisma.employee.findFirst({
+        where: { position: Position.HEAD, departmentId: dto.departmentId },
+      });
+
+      if (headOfDepartament)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: `[EmployeeService addNewEmployee] Head of department ID provided has already exists`,
+        });
+    }
     const updateEmployee = await prisma.employee.update({
       where: {
         id: id,
@@ -141,6 +161,24 @@ export class EmployeeService {
       include: {
         department: true,
       },
+    });
+    return employees;
+  }
+
+  static async getFiveNewestEmployeesOfCompany(id: number) {
+    const employees = await prisma.employee.findMany({
+      where: {
+        department: {
+          companyId: id,
+        },
+      },
+      include: {
+        department: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 5,
     });
     return employees;
   }

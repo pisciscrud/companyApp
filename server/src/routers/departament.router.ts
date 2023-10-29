@@ -1,5 +1,5 @@
 import { DepartamentController } from "../controllers/departament.controller";
-import { baseProcedure, router } from "../trpc";
+import { baseProcedure, router ,adminProcedure} from "../trpc";
 import {
   CreateDepartamentSchema,
   paramCompany,
@@ -9,26 +9,26 @@ import {
 } from "../schema/departament.schema";
 
 export const departamentRouter = router({
-  allDepartaments: baseProcedure.query(DepartamentController.getAll),
-  allDepartamentsOfCompany: baseProcedure
+  allDepartaments: adminProcedure.query(DepartamentController.getAll),
+  allDepartamentsOfCompany: adminProcedure
     .input(paramCompany)
     .query(({ input }) =>
       DepartamentController.getDepartamentsOfCompany({ paramsInput: input })
     ),
-  addNewDeraptament: baseProcedure
+  addNewDeraptament: adminProcedure
     .input(CreateDepartamentSchema)
     .mutation(({ input }) => DepartamentController.addDepartament({ input })),
-  findLargestDepartaments: baseProcedure
+  findLargestDepartaments: adminProcedure
     .input(paramCompany)
     .query(({ input }) =>
       DepartamentController.findFiveLargest({ paramsInput: input })
     ),
-  deleteDepartament: baseProcedure
+  deleteDepartament: adminProcedure
     .input(paramDepartament)
     .mutation(({ input }) =>
       DepartamentController.deleteDepartament({ paramsInput: input })
     ),
-  updateDepartamnet: baseProcedure
+  updateDepartamnet: adminProcedure
     .input(UpdateDepartamentSchema)
     .mutation(({ input }) =>
       DepartamentController.updateDepartament({
@@ -36,7 +36,7 @@ export const departamentRouter = router({
         input: input.body,
       })
     ),
-  findInfoAboutDepartament: baseProcedure
+  findInfoAboutDepartament: adminProcedure
     .input(paramDepartament)
     .query(({ input }) =>
       DepartamentController.getInfoAboutDepartament({ paramsInput: input })

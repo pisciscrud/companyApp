@@ -21,12 +21,12 @@ export const employeeRouter = router({
         input: input.body,
       })
     ),
-  deleteEmployee: baseProcedure
+  deleteEmployee: adminProcedure
     .input(employeeParams)
     .mutation(({ input }) =>
       EmployeeController.deleteEmployee({ paramsInput: input })
     ),
-  emplyeesByName: baseProcedure
+  emplyeesByName: adminProcedure
     .input(paramName)
     .query(({ input }) =>
       EmployeeController.findEmployeesByName({ paramInput: input })
@@ -36,5 +36,14 @@ export const employeeRouter = router({
     .query(({ input }) =>
       EmployeeController.findInfoAboutEmployee({ paramsInput: input })
     ),
-    getEmployeesOfCompany: baseProcedure.input(companyParams).query(({input})=>EmployeeController.getEmployeesOfCompany({paramsInput:input}))
+  getEmployeesOfCompany: adminProcedure
+    .input(companyParams)
+    .query(({ input }) =>
+      EmployeeController.getEmployeesOfCompany({ paramsInput: input })
+    ),
+  getFiveNewestEmployeesOfCompany: adminProcedure
+    .input(companyParams)
+    .query(({ input }) =>
+      EmployeeController.getFiveEmployeesOfCompany({ paramsInput: input })
+    ),
 });

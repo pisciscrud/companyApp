@@ -26,13 +26,7 @@ export class CompanyController {
     }
   }
 
-  static async addCompany({
-    input,
-    ctx,
-  }: {
-    input: CreateCompanyInput;
-    ctx: any;
-  }) {
+  static async addCompany({ input }: { input: CreateCompanyInput }) {
     try {
       const result = await CompanyService.addNewCompany(input);
       return {
@@ -81,7 +75,11 @@ export class CompanyController {
     }
   }
 
-  static async deleteCompany({ paramsInput }: { paramsInput: ParamsInputCompany }) {
+  static async deleteCompany({
+    paramsInput,
+  }: {
+    paramsInput: ParamsInputCompany;
+  }) {
     try {
       await CompanyService.deleteCompany(paramsInput.companyId);
       return {
@@ -122,5 +120,4 @@ export class CompanyController {
       });
     }
   }
-
 }

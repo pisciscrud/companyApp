@@ -3,13 +3,19 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addNewEmployee } from "../../api/employees.api";
+import { updateEmployee } from "../../api/employees.api";
+import { Employee } from "../../shared/interfaces/employee";
 import { Department } from "../../shared/interfaces/department";
-import { Position } from "../../shared/interfaces/employee";
 
-interface AddEmployeeModalProps {
+enum Position {
+  HEAD = "HEAD",
+  EMPLOYEE = "EMPLOYEE",
+}
+
+interface UpdateEmployeeModalProps {
   showModal: boolean;
   handleClose: () => void;
+  employee: Employee;
   departments: Department[];
 }
 
@@ -27,55 +33,43 @@ const schema = z.object({
 });
 type FormSchema = z.infer<typeof schema>;
 
-const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
+const UpdateEmployeeModal: React.FC<UpdateEmployeeModalProps> = ({
   showModal,
   handleClose,
+  employee,
   departments,
 }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-    reset,
+    setFocus,
+    formState: { isSubmitting, errors, isDirty },
   } = useForm<FormSchema>({ resolver: zodResolver(schema) });
 
-  const [currentFirstName, setCurrentFirstName] = useState("");
-  const [currentLastName, setCurrentLastName] = useState("");
-  const [currentPosition, setCurrentPosition] = useState(Position.HEAD);
-  const [currentDepartment, setCurrentDepartment] = useState(departments[0]);
+  const [currentFirstName, setCurrentFirstName] = useState(employee.firstName);
+  const [currentLastName, setCurrentLastName] = useState(employee.lastName);
+  const [currentPosition, setCurrentPosition] = useState(employee.position);
+  const [currentDepartment, setCurrentDepartment] = useState(
+    employee.departmentId
+  );
   const [error, setError] = useState("");
 
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
-      console.log(validationResult);
       if (validationResult.success) {
-        await addNewEmployee(formData);
-
-        handleModalClose();
+        await updateEmployee(employee.id, formData);
+        handleClose();
       }
-    } catch (err: any) {
+    } catch (err : any) {
       setError(err.message || "An error occurred");
     }
   };
 
-  const resetForm = () => {
-    reset({});
-    setCurrentFirstName("");
-    setCurrentLastName("");
-    setCurrentPosition(Position.HEAD);
-    setError("");
-  };
-
-  const handleModalClose = () => {
-    resetForm();
-    handleClose();
-  };
-
   return (
-    <Modal show={showModal} onHide={handleModalClose}>
+    <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Add Employee</Modal.Title>
+        <Modal.Title>Update Employee</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
@@ -138,7 +132,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
               onChange={(e) => setCurrentDepartment(e.target.value)}
               isInvalid={!!errors.department}
             >
-              {departments.map((department: Department) => (
+              {departments.map((department) => (
                 <option key={department.id} value={department.id}>
                   {department.name}
                 </option>
@@ -150,20 +144,18 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
               </Form.Control.Feedback>
             )}
           </Form.Group>
-          <div style={{ textAlign: "center" }}>
-            <Button
-              style={{ margin: "10px", backgroundColor: "rgb(19, 38, 98)" }}
-              type="submit"
-              // disabled={!isDirty || isSubmitting}
-            >
-              Add
-            </Button>
-          </div>
-          <div>{error && <p style={{ color: "red" }}>{error}</p>}</div>
+          {error && <p className="text-danger">{error}</p>}
+          <Button
+            variant="primary"
+            type="submit"
+            // disabled={!isDirty || isSubmitting}
+          >
+            {isSubmitting ? "Updating..." : "Update"}
+          </Button>
         </Form>
       </Modal.Body>
     </Modal>
   );
 };
 
-export default AddEmployeeModal;
+export default UpdateEmployeeModal;

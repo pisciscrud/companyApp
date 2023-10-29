@@ -11,7 +11,7 @@ const isAdmin = middleware(async (opts) => {
     const { ctx } = opts;
 
     const token = ctx.token; 
-    console.log(token);
+
     const payload = AuthService.verifyToken(token);
     await UserService.getById(payload.id);
 

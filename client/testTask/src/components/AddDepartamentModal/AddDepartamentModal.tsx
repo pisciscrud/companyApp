@@ -1,72 +1,78 @@
-import  { useState } from "react";
+import { useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { updateDepartament } from "../../api/departaments.api";
-import { Department } from '../../../src/shared/interfaces/department';
+import { addNewDepartment } from "../../api/departaments.api";
 
-interface AddCompanyModalProps {
+interface AddDepartmentModalProps {
   showModal: boolean;
   handleClose: () => void;
-  updateInfo: Department;
+  id?: string;
 }
 
 const schema = z.object({
   name: z
     .string()
-    .min(2, { message: "Name of company is too short" })
-    .max(20, "Name of company is too long"),
+    .min(2, { message: "Name of departament is min 2 symbols" })
+    .max(20, "Name of company is max 20 symbols"),
   description: z
     .string()
-    .min(2, { message: "Description of company is too short" })
-    .max(80, "Description of company is too long"),
+    .min(2, { message: "Description of departament is min 2 symbols" })
+    .max(80, "Description of departament is max 80 symbols"),
 });
 type FormSchema = z.infer<typeof schema>;
 
-const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
+const AddDepartamentModal: React.FC<AddDepartmentModalProps> = ({
   showModal,
   handleClose,
-  updateInfo,
+  id,
 }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    setFocus,
+    resetField,
+    formState: { isSubmitting, errors, isDirty },
   } = useForm<FormSchema>({ resolver: zodResolver(schema) });
 
-  const [currentName, setCurrentName] = useState(updateInfo.name);
-  const [currentDescription, setCurrentDescription] = useState(
-    updateInfo.description
-  );
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
       console.log(validationResult);
       if (validationResult.success) {
-        await updateDepartament(updateInfo.id, formData);
-        handleClose();
+        if (!id) return;
+        await addNewDepartment(+id, formData);
+        hanleCloseModal();
       }
     } catch (err) {
       console.error("Request error:", err);
     }
   };
 
+  useEffect(() => {
+    setFocus("name");
+  }, []);
+
+  const hanleCloseModal = () => {
+    resetField("name");
+    resetField("description");
+    handleClose();
+  };
+
   return (
-    <Modal show={showModal} onHide={handleClose}>
+    <Modal show={showModal} onHide={hanleCloseModal}>
       <Modal.Header closeButton>
-        <Modal.Title>Update department</Modal.Title>
+        <Modal.Title>Add new department</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <Form.Group controlId="name">
-            <Form.Label>New name of department </Form.Label>
+            <Form.Label>Name of new department</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Input name of company"
+              placeholder="Input name of department"
               {...register("name")}
-              value={currentName}
-              onChange={(e) => setCurrentName(e.target.value)}
               isInvalid={!!errors.name}
             />
             {errors.name && (
@@ -76,13 +82,11 @@ const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
             )}
           </Form.Group>
           <Form.Group controlId="description">
-            <Form.Label>New description of department</Form.Label>
+            <Form.Label>Description of department</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Input description of company"
-              value={currentDescription}
+              placeholder="Input description of department"
               {...register("description")}
-              onChange={(e) => setCurrentDescription(e.target.value)} // Обновление состояния currentDescription
               isInvalid={!!errors.description}
             />
             {errors.description && (
@@ -95,6 +99,7 @@ const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
             <Button
               style={{ margin: "10px", backgroundColor: "rgb(19, 38, 98)" }}
               type="submit"
+              disabled={!isDirty || isSubmitting}
             >
               Add
             </Button>
@@ -105,4 +110,4 @@ const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
   );
 };
 
-export default UpdateDepartamentModal;
+export default AddDepartamentModal;
