@@ -1,5 +1,5 @@
 import { prisma } from "../prisma";
-import { Department } from "@prisma/client";
+
 import {
   CreateDepartamentDTO,
   UpdateDepartamentDTO,

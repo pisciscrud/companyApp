@@ -24,7 +24,7 @@ const EmployeeTable: React.FC = () => {
   const [isModalClosed, setIsModalClosed] = useState(false);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [modalStates, setModalStates] = useState<boolean[]>([]);
-  const [isModalClosed1, setIsModalClosed1] = useState(false);
+  const [isModalClosed1] = useState(false);
 
   const handleOpenModalUpdateEmployee = (index: number) => {
     setModalStates((prevStates) => {
@@ -60,9 +60,9 @@ const EmployeeTable: React.FC = () => {
         getAllDepartaments(+id),
       ]);
       setModalStates(new Array(employees.data.result.length).fill(false));
-      if(departments) {
-      setDepartments(departments);
-      };
+      if (departments) {
+        setDepartments(departments);
+      }
       setEmployees(employees.data.result);
     } catch (error) {
       console.error(error);
