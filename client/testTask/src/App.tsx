@@ -22,7 +22,7 @@ function App() {
           <Route path="employees" element={<EmployeesPage />}></Route>
           <Route
             path="employees/info/:idEmployee"
-            element={<EmployeePage />}
+            element={<EmployeePage/>}
           ></Route>
           <Route path="departaments" element={<DepartamentsPage />}></Route>
           <Route
