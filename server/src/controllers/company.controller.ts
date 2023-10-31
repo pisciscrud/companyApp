@@ -7,10 +7,9 @@ import {
 } from "../schema/company.schema";
 
 export class CompanyController {
-  static async getAll({ ctx }: { ctx: any }) {
+  static async getAll() {
     try {
       const result = await CompanyService.getAllCompanies();
-
       return {
         status: "success",
         data: {

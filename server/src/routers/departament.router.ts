@@ -1,11 +1,10 @@
 import { DepartamentController } from "../controllers/departament.controller";
-import { baseProcedure, router ,adminProcedure} from "../trpc";
+import { router, adminProcedure } from "../trpc";
 import {
   CreateDepartamentSchema,
   paramCompany,
   paramDepartament,
   UpdateDepartamentSchema,
-  ParamsInput,
 } from "../schema/departament.schema";
 
 export const departamentRouter = router({

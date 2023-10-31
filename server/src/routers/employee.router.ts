@@ -5,7 +5,7 @@ import {
   employeeParams,
   paramName,
 } from "../schema/employee.schema";
-import { baseProcedure, router, adminProcedure } from "../trpc";
+import { router, adminProcedure } from "../trpc";
 import { companyParams } from "../schema/company.schema";
 
 export const employeeRouter = router({

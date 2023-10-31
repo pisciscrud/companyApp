@@ -4,13 +4,13 @@ import {
   UpdateCompanySchema,
   companyParams,
 } from "../schema/company.schema";
-import { baseProcedure, router, adminProcedure } from "../trpc";
+import { router, adminProcedure } from "../trpc";
 
 export const companyRouter = router({
   allCompanies: adminProcedure.query(CompanyController.getAll),
   addCompany: adminProcedure
     .input(CreateCompanySchema)
-    .mutation(({ input, ctx }) => CompanyController.addCompany({ input })),
+    .mutation(({ input }) => CompanyController.addCompany({ input })),
   updateCompany: adminProcedure
     .input(UpdateCompanySchema)
     .mutation(({ input }) =>

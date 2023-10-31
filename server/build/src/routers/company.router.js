@@ -8,7 +8,7 @@ exports.companyRouter = (0, trpc_1.router)({
     allCompanies: trpc_1.adminProcedure.query(controllers_1.CompanyController.getAll),
     addCompany: trpc_1.adminProcedure
         .input(company_schema_1.CreateCompanySchema)
-        .mutation(({ input, ctx }) => controllers_1.CompanyController.addCompany({ input })),
+        .mutation(({ input }) => controllers_1.CompanyController.addCompany({ input })),
     updateCompany: trpc_1.adminProcedure
         .input(company_schema_1.UpdateCompanySchema)
         .mutation(({ input }) => controllers_1.CompanyController.updateCompany({

@@ -13,7 +13,7 @@ exports.CompanyController = void 0;
 const server_1 = require("@trpc/server");
 const _ompany_service_1 = require("../services/\u0441ompany.service");
 class CompanyController {
-    static getAll({ ctx }) {
+    static getAll() {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const result = yield _ompany_service_1.CompanyService.getAllCompanies();
