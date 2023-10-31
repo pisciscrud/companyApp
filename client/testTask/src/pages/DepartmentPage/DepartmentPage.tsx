@@ -6,7 +6,7 @@ import { AddEmployeeToDepartment } from "../../components";
 
 const DepartmentPage: React.FC = () => {
   const { idDepartment } = useParams<{ idDepartment: string }>();
-  const [department, setDepartment] = useState<Department>();
+  const [department, setDepartment] = useState<Department | null>();
   const [isModalClosed, setIsModalClosed] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
@@ -29,6 +29,7 @@ const DepartmentPage: React.FC = () => {
   }, []);
   useEffect(() => {
     if (isModalClosed) {
+      if (!idDepartment) return;
       fetchData(+idDepartment);
       setIsModalClosed(false);
     }
@@ -42,9 +43,9 @@ const DepartmentPage: React.FC = () => {
           <h3>Name: {department.name}</h3>
           <h3>Description : {department.description}</h3>
           <div>
-            <h3>Count of employees: {department.employees.length}</h3>
+            <h3>Count of employees: {department.employees?.length}</h3>
             <ul>
-              {department.employees.map((employee) => (
+              {department.employees?.map((employee) => (
                 <div key={employee.id}>
                   <li>
                     {employee.firstName} {employee.lastName}

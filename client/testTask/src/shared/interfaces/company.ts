@@ -1,6 +1,11 @@
 export interface Company {
   name: string;
   description: string;
-  createdAt: string | null;
+  createdAt: string;
   id: number;
+}
+
+export interface CreateCompanyDTO {
+  name: string;
+  description: string;
 }

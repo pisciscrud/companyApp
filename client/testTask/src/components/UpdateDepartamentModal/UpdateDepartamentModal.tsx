@@ -1,10 +1,10 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateDepartament } from "../../api/departaments.api";
-import { Department } from '../../../src/shared/interfaces/department';
+import { Department } from "../../../src/shared/interfaces/department";
 
 interface AddCompanyModalProps {
   showModal: boolean;
@@ -42,7 +42,7 @@ const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
-      console.log(validationResult);
+
       if (validationResult.success) {
         await updateDepartament(updateInfo.id, formData);
         handleClose();
@@ -82,7 +82,7 @@ const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
               placeholder="Input description of company"
               value={currentDescription}
               {...register("description")}
-              onChange={(e) => setCurrentDescription(e.target.value)} // Обновление состояния currentDescription
+              onChange={(e) => setCurrentDescription(e.target.value)}
               isInvalid={!!errors.description}
             />
             {errors.description && (

@@ -23,7 +23,7 @@ const schema = z.object({
     .min(2, { message: "Last name is too short" })
     .max(20, "Last name is too long"),
   position: z.enum([Position.EMPLOYEE, Position.HEAD]),
-  department: z.string().nonempty("Department is required"),
+  departmentId: z.string(),
 });
 type FormSchema = z.infer<typeof schema>;
 
@@ -42,16 +42,18 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
   const [currentFirstName, setCurrentFirstName] = useState("");
   const [currentLastName, setCurrentLastName] = useState("");
   const [currentPosition, setCurrentPosition] = useState(Position.HEAD);
-  const [currentDepartment, setCurrentDepartment] = useState(departments[0]);
+  const [currentDepartment, setCurrentDepartment] = useState<number|undefined>(departments[0]?.id);
   const [error, setError] = useState("");
 
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
-      console.log(validationResult);
+  
       if (validationResult.success) {
-        await addNewEmployee(formData);
-
+        await addNewEmployee({
+          ...formData,
+          departmentId: +formData.departmentId,
+        });
         handleModalClose();
       }
     } catch (err: any) {
@@ -134,9 +136,9 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
             <Form.Control
               as="select"
               value={currentDepartment}
-              {...register("department")}
-              onChange={(e) => setCurrentDepartment(e.target.value)}
-              isInvalid={!!errors.department}
+              {...register("departmentId")}
+              onChange={(e) => setCurrentDepartment(+e.target.value)}
+              isInvalid={!!errors.departmentId}
             >
               {departments.map((department: Department) => (
                 <option key={department.id} value={department.id}>
@@ -144,18 +146,16 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
                 </option>
               ))}
             </Form.Control>
-            {errors.department && (
+            {errors.departmentId && (
               <Form.Control.Feedback type="invalid">
-                {errors.department.message}
+                {errors.departmentId.message}
               </Form.Control.Feedback>
             )}
           </Form.Group>
           <div style={{ textAlign: "center" }}>
             <Button
               style={{ margin: "10px", backgroundColor: "rgb(19, 38, 98)" }}
-              type="submit"
-              // disabled={!isDirty || isSubmitting}
-            >
+              type="submit">
               Add
             </Button>
           </div>

@@ -7,8 +7,8 @@ export class AuthService {
   static async signIn(email: string, password: string) {
     const user = await UserService.getByEmail(email);
 
-    const passwordHash = await bcrypt.compare(password,user.password);
-   
+    const passwordHash = await bcrypt.compare(password, user.password);
+
     if (!passwordHash)
       throw new TRPCError({
         code: "UNAUTHORIZED",

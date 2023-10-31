@@ -74,7 +74,6 @@ export class CompanyService {
       where: {
         id: id,
       },
-     
     });
     if (!foundCompany) {
       throw new TRPCError({

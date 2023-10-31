@@ -4,8 +4,15 @@ export interface Department {
   id: number;
   name: string;
   description: string;
-  createdAt: string | null;
-  updatedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
   companyId: number;
-  employees: Employee[];
+  employees?: Employee[];
 }
+
+export interface CreateDepartmentDTO {
+  name: string;
+  description: string;
+}
+
+export interface UpdateDepartamentDTO extends Partial<CreateDepartmentDTO> {}

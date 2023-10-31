@@ -11,7 +11,6 @@ import {
   UpdateDepartmentModal,
   AddDepartmentModal,
 } from "../../components/index";
-
 import { Department } from "../../shared/interfaces/department";
 
 const DepartmentPage: React.FC = () => {
@@ -27,9 +26,8 @@ const DepartmentPage: React.FC = () => {
       if (!id) return;
       const response = await getAllDepartaments(+id);
       if (!response) return;
-      setDepartments(response.data.result);
-
-      setModalStates(new Array(response.data.result.length).fill(false));
+      setDepartments(response);
+      setModalStates(new Array(response.length).fill(false));
     } catch (error) {
       console.error(error);
     }
@@ -108,9 +106,9 @@ const DepartmentPage: React.FC = () => {
               <td>{new Date(department.createdAt).toLocaleString()}</td>
               <td>{new Date(department.updatedAt).toLocaleString()}</td>
               <td>
-                <p>Count of employees: {department.employees.length}</p>
+                <p>Count of employees: {department.employees?.length}</p>
                 <ul>
-                  {department.employees.map((employee) => (
+                  {department.employees?.map((employee) => (
                     <div key={employee.id}>
                       <li>
                         {employee.firstName} {employee.lastName}

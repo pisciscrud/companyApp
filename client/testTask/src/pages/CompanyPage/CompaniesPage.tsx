@@ -4,9 +4,10 @@ import styles from "./company.module.css";
 import { CompanyItem, AddCompanyModal } from "../../components/index";
 import { PlusCircle } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
+import { Company } from "../../shared/interfaces/company";
 
 const CompaniesPage: React.FC = () => {
-  const [companies, setCompanies] = useState([]);
+  const [companies, setCompanies] = useState<Company[]>();
   const [showModal, setShowModal] = useState(false);
   const [isModalClosed, setIsModalClosed] = useState(false);
   const navigate = useNavigate();

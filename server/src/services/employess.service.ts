@@ -151,7 +151,7 @@ export class EmployeeService {
     return findedEmployees;
   }
 
-  static async getEmployeesOfCompany(id: number) {
+  static async getEmployeesOfCompany(id: number): Promise<Employee[]> {
     const employees = await prisma.employee.findMany({
       where: {
         department: {

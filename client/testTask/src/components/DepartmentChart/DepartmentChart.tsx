@@ -1,18 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
-
-interface Department {
-  id: number;
-  name: string;
-  employees: Employee[];
-}
-
-interface Employee {
-  id: number;
-  firstName: string;
-  lastName: string;
-  position: string;
-}
+import { Department } from "../../shared/interfaces/department";
 
 interface DepartmentChartProps {
   departments: Department[];
@@ -20,7 +8,7 @@ interface DepartmentChartProps {
 
 const DepartmentChart: React.FC<DepartmentChartProps> = ({ departments }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const chartRef = useRef<Chart | null>(null);
+  const chartRef = useRef<Chart<"doughnut", number[], string> | null>(null);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -28,35 +16,37 @@ const DepartmentChart: React.FC<DepartmentChartProps> = ({ departments }) => {
 
       if (ctx) {
         if (chartRef.current) {
-          chartRef.current.destroy(); // Уничтожаем предыдущий график, если он существует
+          chartRef.current.destroy();
         }
 
         const employeeCounts = departments.map(
-          (department) => department.employees.length
+          (department) => department.employees?.length ?? 0
         );
-
-        chartRef.current = new Chart(ctx, {
-          type: "doughnut",
-          data: {
-            labels: departments.map((department) => department.name),
-            datasets: [
-              {
-                data: employeeCounts,
-                backgroundColor: [
-                  "rgba(0, 0, 255, 0.6)",
-                  "rgba(0, 128, 255, 0.6)",
-                  "rgba(19, 38, 98, 0.4)",
-                  "rgba(102, 178, 255, 0.6)",
-                  "rgba(255, 206, 86, 0.6)",
-                ],
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-          },
-        });
+        if (chartRef) {
+          const chart = new Chart(ctx, {
+            type: "doughnut",
+            data: {
+              labels: departments.map((department) => department.name),
+              datasets: [
+                {
+                  data: employeeCounts,
+                  backgroundColor: [
+                    "rgba(0, 0, 255, 0.6)",
+                    "rgba(0, 128, 255, 0.6)",
+                    "rgba(19, 38, 98, 0.4)",
+                    "rgba(102, 178, 255, 0.6)",
+                    "rgba(255, 206, 86, 0.6)",
+                  ],
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+            },
+          });
+          chartRef.current = chart;
+        }
       }
     }
   }, [departments]);

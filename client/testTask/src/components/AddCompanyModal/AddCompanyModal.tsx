@@ -35,7 +35,7 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
-      console.log(validationResult);
+
       if (validationResult.success) {
         await addNewCompany(formData);
         hadleCloseModal();
@@ -64,11 +64,11 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({
               type="text"
               placeholder="Input name of company"
               {...register("name")}
-              isInvalid={!!errors.companyName}
+              isInvalid={!!errors.name}
             />
-            {errors.companyName && (
+            {errors.name && (
               <Form.Control.Feedback type="invalid">
-                {errors.companyName.message}
+                {errors.name.message}
               </Form.Control.Feedback>
             )}
           </Form.Group>

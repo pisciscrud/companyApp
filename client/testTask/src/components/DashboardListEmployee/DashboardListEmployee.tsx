@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from "react";
-import styles from './DashboardListEmployee.module.css'
+import styles from "./DashboardListEmployee.module.css";
+import { Employee } from "../../shared/interfaces/employee";
 
-const DashboardListEmployee: React.FC = ({ id, employees }) => {
+interface DashboardListEmployeeProps {
+  employees: Employee[];
+}
 
-
+const DashboardListEmployee: React.FC<DashboardListEmployeeProps> = ({
+  employees,
+}) => {
   return (
     <>
       <div className={styles.dashboardCard}>
@@ -11,10 +15,10 @@ const DashboardListEmployee: React.FC = ({ id, employees }) => {
         <ul>
           {employees.map((employee) => (
             <a key={employee.id} href={`employees/info/${employee.id}`}>
-            <li key={employee.id} className={styles.dashboardCardItem}>
-              {employee.firstName} {employee.lastName} -{" "}
-              {new Date(employee.createdAt).toLocaleString()}
-            </li>
+              <li key={employee.id} className={styles.dashboardCardItem}>
+                {employee.firstName} {employee.lastName} -{" "}
+                {new Date(employee.createdAt).toLocaleString()}
+              </li>
             </a>
           ))}
         </ul>

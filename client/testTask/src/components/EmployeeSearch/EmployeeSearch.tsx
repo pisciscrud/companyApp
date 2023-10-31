@@ -1,5 +1,5 @@
-import React, { useState, ChangeEvent } from "react";
-import { Form, FormControl, Button } from "react-bootstrap";
+import { useState, ChangeEvent } from "react";
+import { Form, FormControl } from "react-bootstrap";
 
 interface EmployeeSearchProps {
   handleSearch: (searchTerm: string) => void;
@@ -14,7 +14,7 @@ const EmployeeSearch: React.FC<EmployeeSearchProps> = ({ handleSearch }) => {
   };
 
   return (
-    <Form style={{marginTop: '15px'}}>
+    <Form style={{ marginTop: "15px" }}>
       <FormControl
         type="text"
         placeholder="Search by name"

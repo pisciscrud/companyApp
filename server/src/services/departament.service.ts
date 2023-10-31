@@ -65,6 +65,7 @@ export class DepartamentService {
         employees: true,
         createdAt: true,
         updatedAt: true,
+        companyId: true,
       },
     });
 
@@ -91,7 +92,6 @@ export class DepartamentService {
   }
 
   static async updateDepartament(id: number, dto: UpdateDepartamentDTO) {
-    console.log(id,dto)
     const foundDepartament = await prisma.department.findFirst({
       where: {
         id: id,
@@ -111,7 +111,7 @@ export class DepartamentService {
         ...dto,
       },
     });
-    console.log("updated", updateDepartament);
+
     return updateDepartament;
   }
 

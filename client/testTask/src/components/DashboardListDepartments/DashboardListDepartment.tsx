@@ -1,24 +1,37 @@
-import React, { useEffect, useState } from "react";
 import styles from "../DashboardListEmployee/DashboardListEmployee.module.css";
+import { Department } from "../../shared/interfaces/department";
 
-const DashboardListDepartament: React.FC = ({ departments }) => {
+interface DashboardListDepartamentProps {
+  departments: Department[];
+}
+
+const DashboardListDepartament: React.FC<DashboardListDepartamentProps> = ({
+  departments,
+}) => {
   return (
     <>
       <div className={styles.dashboardCard}>
         <h2>Largest departments</h2>
         <ul>
-          {departments.map((department) => (
-               <a key={department.id} href={`departaments/info/${department.id}`}>
-            <div key={department.id} className={styles.dashboardCardItem}>
-              <li>
-                <div>
-                  <h6> Name: {department.name}</h6>
-                  <h6> Count of employees: {department.employees.length} </h6>
+          {departments &&
+            departments.map((department) => (
+              <a
+                key={department.id}
+                href={`departaments/info/${department.id}`}
+              >
+                <div key={department.id} className={styles.dashboardCardItem}>
+                  <li>
+                    <div>
+                      <h6> Name: {department.name}</h6>
+                      <h6>
+                        {" "}
+                        Count of employees: {department.employees?.length}{" "}
+                      </h6>
+                    </div>
+                  </li>
                 </div>
-              </li>
-            </div>
-            </a>
-          ))}
+              </a>
+            ))}
         </ul>
       </div>
     </>

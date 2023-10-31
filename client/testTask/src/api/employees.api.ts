@@ -1,16 +1,33 @@
+import {
+  CreateEmployeeDTO,
+  UpdateEmployeeDTO,
+} from "../shared/interfaces/employee";
 import { trpc } from "../utils/trpcClient";
-import { CreateEmployeeInput, UpdateEmployeeInput } from "../../../../server/src/schema/employee.schema";
 
-export const addNewEmployee = async (input) => {
+export const addNewEmployee = async (input: CreateEmployeeDTO) => {
   try {
     const res = await trpc.employee.addEmployee.mutate({
       firstName: input.firstName,
       lastName: input.lastName,
-      departmentId: +input.department,
+      departmentId: input.departmentId,
       position: input.position,
     });
     return res;
-  } catch (error:any) {
+  } catch (error: any) {
+    throw new Error(`Failed to add new employee: ${error.message}`);
+  }
+};
+
+export const addNewEmployeeToDepartment = async (input: CreateEmployeeDTO) => {
+  try {
+    const res = await trpc.employee.addEmployee.mutate({
+      firstName: input.firstName,
+      lastName: input.lastName,
+      departmentId: input.departmentId,
+      position: input.position,
+    });
+    return res;
+  } catch (error: any) {
     throw new Error(`Failed to add new employee: ${error.message}`);
   }
 };
@@ -26,33 +43,26 @@ export const deleteEmployee = async (input: number) => {
   return await trpc.employee.deleteEmployee.mutate({ idEmployee: input });
 };
 
-
-export const updateEmployee = async (id:number,input) =>
-{
+export const updateEmployee = async (id: number, input: UpdateEmployeeDTO) => {
   await trpc.employee.updateEmployee.mutate({
-    params:
-    {
-      idEmployee: +id
+    params: {
+      idEmployee: +id,
     },
-    body:
-    {
+    body: {
       firstName: input.firstName,
       lastName: input.lastName,
-      departmentId: +input.department,
+      ...(input?.departmentId && { departmentId: input.departmentId }),
       position: input.position,
+    },
+  });
+};
 
-    }
-  })
-}
+export const getFiveNewestEmployeesOfCompany = async (input: number) => {
+  return await trpc.employee.getFiveNewestEmployeesOfCompany.query({
+    companyId: +input,
+  });
+};
 
-export const getFiveNewestEmployeesOfCompany = async (input: number) =>
-{
-
-  return await trpc.employee.getFiveNewestEmployeesOfCompany.query({ companyId: +input });
-}
-
-export const getInfoAboutEmployee = async ( input: number) =>
-{
-  console.log('input',input);
-  return await trpc.employee.findInfoAboutEmployee.query({ idEmployee : input});
-}
+export const getInfoAboutEmployee = async (input: number) => {
+  return await trpc.employee.findInfoAboutEmployee.query({ idEmployee: input });
+};

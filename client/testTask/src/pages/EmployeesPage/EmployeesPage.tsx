@@ -15,17 +15,18 @@ import styles from "./EmployeePage.module.css";
 import { Trash, PencilSquare } from "react-bootstrap-icons";
 import { getAllDepartaments } from "../../api/departaments.api";
 import { Employee } from "../../shared/interfaces/employee";
+import { Department } from "../../shared/interfaces/department";
 
 const EmployeeTable: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const { id } = useParams<{ id: string }>();
   const [showModal, setShowModal] = useState(false);
   const [isModalClosed, setIsModalClosed] = useState(false);
-  const [departments, setDepartments] = useState([]);
+  const [departments, setDepartments] = useState<Department[]>([]);
   const [modalStates, setModalStates] = useState<boolean[]>([]);
   const [isModalClosed1, setIsModalClosed1] = useState(false);
 
-  const handleOpenModal1 = (index: number) => {
+  const handleOpenModalUpdateEmployee = (index: number) => {
     setModalStates((prevStates) => {
       const updatedStates = [...prevStates];
       updatedStates[index] = true;
@@ -33,7 +34,7 @@ const EmployeeTable: React.FC = () => {
     });
   };
 
-  const handleCloseModal1 = (index: number) => {
+  const handleCloseModalUpdateEmployee = (index: number) => {
     setModalStates((prevStates) => {
       const updatedStates = [...prevStates];
       updatedStates[index] = false;
@@ -42,11 +43,11 @@ const EmployeeTable: React.FC = () => {
     setIsModalClosed(true);
   };
 
-  const handleOpenModal = () => {
+  const handleOpenModalAddEmployee = () => {
     setShowModal(true);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseModalAddEmployee = () => {
     setShowModal(false);
     setIsModalClosed(true);
   };
@@ -59,8 +60,9 @@ const EmployeeTable: React.FC = () => {
         getAllDepartaments(+id),
       ]);
       setModalStates(new Array(employees.data.result.length).fill(false));
-      console.log(employees, departments);
-      setDepartments(departments.data.result);
+      if(departments) {
+      setDepartments(departments);
+      };
       setEmployees(employees.data.result);
     } catch (error) {
       console.error(error);
@@ -98,7 +100,10 @@ const EmployeeTable: React.FC = () => {
     <>
       <div className={styles.headerContainer}>
         <h1 style={{ marginLeft: "30px" }}>Employees of Company</h1>
-        <Button className={styles.addEmployeeButton} onClick={handleOpenModal}>
+        <Button
+          className={styles.addEmployeeButton}
+          onClick={handleOpenModalAddEmployee}
+        >
           Add employee
         </Button>
         <EmployeeSearch handleSearch={handleSearch} />
@@ -125,7 +130,7 @@ const EmployeeTable: React.FC = () => {
                 <td>{employee.position}</td>
                 <td>{new Date(employee.createdAt).toLocaleString()}</td>
                 <td>{new Date(employee.updatedAt).toLocaleString()}</td>
-                <td>{employee.department.name}</td>
+                <td>{employee.department?.name}</td>
                 <td>
                   <button
                     className={styles.deleteButton}
@@ -137,13 +142,13 @@ const EmployeeTable: React.FC = () => {
                 <td>
                   <button
                     className={styles.deleteButton}
-                    onClick={() => handleOpenModal1(index)}
+                    onClick={() => handleOpenModalUpdateEmployee(index)}
                   >
                     <PencilSquare />
                   </button>
                   <UpdateEmployeeModal
                     showModal={modalStates[index]}
-                    handleClose={() => handleCloseModal1(index)}
+                    handleClose={() => handleCloseModalUpdateEmployee(index)}
                     employee={employee}
                     departments={departments}
                   />
@@ -155,7 +160,7 @@ const EmployeeTable: React.FC = () => {
         <AddEmployeeModal
           departments={departments}
           showModal={showModal}
-          handleClose={handleCloseModal}
+          handleClose={handleCloseModalAddEmployee}
         ></AddEmployeeModal>
       </div>
     </>

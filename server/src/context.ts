@@ -1,7 +1,6 @@
 import { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import { prisma } from "./prisma";
 
-
 export async function createInnerTRPCContext(opts?: any) {
   return {
     prisma,

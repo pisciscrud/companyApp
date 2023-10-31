@@ -21,7 +21,7 @@ const DashboardPage: React.FC = () => {
       getFiveLargestDepartaments(id),
       getFiveNewestEmployeesOfCompany(id),
     ]);
-    setDepartments(departaments.data.result);
+    setDepartments(departaments);
     setEmployees(employees.data.result);
   };
 
@@ -35,11 +35,8 @@ const DashboardPage: React.FC = () => {
       <div className={styles.container}>
         <h1 style={{ textAlign: "center" }}>Dashboard</h1>
         <div className={styles.conteinerItem}>
-          <DashboardListDepartament id={id} departments={departaments} />
-          <DashboardListEmployee
-            id={id}
-            employees={employees}
-          ></DashboardListEmployee>
+          <DashboardListDepartament departments={departaments} />
+          <DashboardListEmployee employees={employees}/>
           <DepartmentChart departments={departaments} />
         </div>
       </div>

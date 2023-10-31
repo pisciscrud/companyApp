@@ -9,9 +9,18 @@ export interface Employee {
   id: number;
   firstName: string;
   lastName: string;
-  position: Position.HEAD | Position.EMPLOYEE;
+  position: "HEAD" | "EMPLOYEE";
   departmentId: number;
   createdAt: number | string;
   updatedAt: number | string;
-  department: Department;
+  department?: Department;
 }
+
+export interface CreateEmployeeDTO {
+  firstName: string;
+  lastName: string;
+  position: Position;
+  departmentId: number;
+}
+
+export interface UpdateEmployeeDTO extends Partial<CreateEmployeeDTO> {}

@@ -29,7 +29,7 @@ const schema = z.object({
     .min(2, { message: "Last name is too short" })
     .max(20, "Last name is too long"),
   position: z.enum([Position.EMPLOYEE, Position.HEAD]),
-  department: z.string().nonempty("Department is required"),
+  departmentId: z.string(),
 });
 type FormSchema = z.infer<typeof schema>;
 
@@ -42,26 +42,29 @@ const UpdateEmployeeModal: React.FC<UpdateEmployeeModalProps> = ({
   const {
     register,
     handleSubmit,
-    setFocus,
-    formState: { isSubmitting, errors, isDirty },
+
+    formState: { isSubmitting, errors },
   } = useForm<FormSchema>({ resolver: zodResolver(schema) });
 
   const [currentFirstName, setCurrentFirstName] = useState(employee.firstName);
   const [currentLastName, setCurrentLastName] = useState(employee.lastName);
   const [currentPosition, setCurrentPosition] = useState(employee.position);
-  const [currentDepartment, setCurrentDepartment] = useState(
-    employee.departmentId
-  );
+  const [currentDepartment, setCurrentDepartment] = useState<
+    number | undefined
+  >(employee.department?.id);
   const [error, setError] = useState("");
 
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
       if (validationResult.success) {
-        await updateEmployee(employee.id, formData);
+        await updateEmployee(employee.id, {
+          ...formData,
+          departmentId: +formData.departmentId,
+        });
         handleClose();
       }
-    } catch (err : any) {
+    } catch (err: any) {
       setError(err.message || "An error occurred");
     }
   };
@@ -123,14 +126,14 @@ const UpdateEmployeeModal: React.FC<UpdateEmployeeModalProps> = ({
               </Form.Control.Feedback>
             )}
           </Form.Group>
-          <Form.Group controlId="department">
+          <Form.Group controlId="departmentId">
             <Form.Label>Department</Form.Label>
             <Form.Control
               as="select"
               value={currentDepartment}
-              {...register("department")}
-              onChange={(e) => setCurrentDepartment(e.target.value)}
-              isInvalid={!!errors.department}
+              {...register("departmentId")}
+              onChange={(e) => setCurrentDepartment(+e.target.value)}
+              isInvalid={!!errors.departmentId}
             >
               {departments.map((department) => (
                 <option key={department.id} value={department.id}>
@@ -138,18 +141,14 @@ const UpdateEmployeeModal: React.FC<UpdateEmployeeModalProps> = ({
                 </option>
               ))}
             </Form.Control>
-            {errors.department && (
+            {errors.departmentId && (
               <Form.Control.Feedback type="invalid">
-                {errors.department.message}
+                {errors.departmentId.message}
               </Form.Control.Feedback>
             )}
           </Form.Group>
           {error && <p className="text-danger">{error}</p>}
-          <Button
-            variant="primary"
-            type="submit"
-            // disabled={!isDirty || isSubmitting}
-          >
+          <Button variant="primary" type="submit">
             {isSubmitting ? "Updating..." : "Update"}
           </Button>
         </Form>

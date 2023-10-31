@@ -39,7 +39,7 @@ const AddDepartamentModal: React.FC<AddDepartmentModalProps> = ({
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
-      console.log(validationResult);
+
       if (validationResult.success) {
         if (!id) return;
         await addNewDepartment(+id, formData);

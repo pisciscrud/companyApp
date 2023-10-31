@@ -10,7 +10,7 @@ export class CompanyController {
   static async getAll({ ctx }: { ctx: any }) {
     try {
       const result = await CompanyService.getAllCompanies();
-      console.log(result);
+
       return {
         status: "success",
         data: {

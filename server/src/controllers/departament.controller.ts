@@ -22,7 +22,9 @@ export class DepartamentController {
       if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: `[DepartamentController getAll] ${error?.message || error?.stack}`,
+        message: `[DepartamentController getAll] ${
+          error?.message || error?.stack
+        }`,
       });
     }
   }
