@@ -42,14 +42,14 @@ export const getAllEmployeesOfCompany = async (
   const employees = await trpc.employee.getEmployeesOfCompany.query({
     ...input,
   });
-  return Object.entries(employees).map(([key, value]) => value);
+  return Object.entries(employees).map(([_key, value]) => value);
 };
 
 export const getEmployeesByName = async (
   input: GetEmployeeByNameInput
 ): Promise<GetEmployeesByNameOutput> => {
   const employees = await trpc.employee.emplyeesByName.query({ ...input });
-  return Object.entries(employees).map(([key, value]) => value);
+  return Object.entries(employees).map(([_key, value]) => value);
 };
 
 export const deleteEmployee = async (input: DeleteEmployeeInput) => {
@@ -68,7 +68,7 @@ export const getFiveNewestEmployeesOfCompany = async (
   const employees = await trpc.employee.getFiveNewestEmployeesOfCompany.query({
     ...input,
   });
-  return Object.entries(employees).map(([key, value]) => value);
+  return Object.entries(employees).map(([_key, value]) => value);
 };
 
 export const getInfoAboutEmployee = async (

@@ -3,7 +3,7 @@ import { CompaniesOutput, CompanyCreateOptions, CompanyDeleteOptions } from "./t
 
 export const getAllCompanies = async (): Promise<CompaniesOutput> => {
   const companies = await trpc.company.allCompanies.query();
-  return Object.entries(companies).map(([key, value]) => value);
+  return Object.entries(companies).map(([_key, value]) => value);
 };
 
 export const addNewCompany = async (input: CompanyCreateOptions) => {

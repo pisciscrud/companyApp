@@ -27,6 +27,7 @@ export type GetInfoAboutEmployeeOutput =
 export type CompanyCreateOptions = RouterInputs["company"]["addCompany"];
 export type CompanyDeleteOptions = RouterInputs["company"]["deleteCompany"];
 export type CompaniesOutput = RouterOutputs["company"]["allCompanies"];
+export type CompanyOutput = RouterOutputs["company"]["findInfoAboutCompany"];
 
 export type DepartmentCreateInput =
   RouterInputs["departament"]["addNewDeraptament"];

@@ -18,7 +18,7 @@ export const getFiveLargestDepartaments = async (
     const departaments = await trpc.departament.findLargestDepartaments.query({
       ...idCompany,
     });
-    return Object.entries(departaments).map(([key, value]) => value);
+    return Object.entries(departaments).map(([_key, value]) => value);
   } catch (e) {
     return new Array();
   }
@@ -31,7 +31,7 @@ export const getAllDepartaments = async (
     const data = await trpc.departament.allDepartamentsOfCompany.query({
       ...idCompany,
     });
-    return Object.entries(data).map(([key, value]) => value);
+    return Object.entries(data).map(([_key, value]) => value);
   } catch (e) {
     return new Array();
   }

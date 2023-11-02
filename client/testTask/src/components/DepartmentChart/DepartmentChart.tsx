@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import Chart from "chart.js/auto";
-import { Department } from "../../shared/interfaces/department";
+import { GetFiveLargestDepartamentsOutput } from "../../api/types";
 
 interface DepartmentChartProps {
-  departments: Department[];
+  departments: GetFiveLargestDepartamentsOutput;
 }
 
 const DepartmentChart: React.FC<DepartmentChartProps> = ({ departments }) => {
