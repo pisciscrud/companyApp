@@ -4,19 +4,18 @@ import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateEmployee } from "../../api/employees.api";
-import { Employee } from "../../shared/interfaces/employee";
-import { Department } from "../../shared/interfaces/department";
+import {
+  GetDepartmnetsOutput,
+  GetInfoAboutEmployeeOutput,
+  Position,
+} from "../../api/types";
 
-enum Position {
-  HEAD = "HEAD",
-  EMPLOYEE = "EMPLOYEE",
-}
 
 interface UpdateEmployeeModalProps {
   showModal: boolean;
   handleClose: () => void;
-  employee: Employee;
-  departments: Department[];
+  employee: Required<GetInfoAboutEmployeeOutput>;
+  departments: GetDepartmnetsOutput;
 }
 
 const schema = z.object({
@@ -58,9 +57,14 @@ const UpdateEmployeeModal: React.FC<UpdateEmployeeModalProps> = ({
     try {
       const validationResult = schema.safeParse(formData);
       if (validationResult.success) {
-        await updateEmployee(employee.id, {
-          ...formData,
-          departmentId: +formData.departmentId,
+        await updateEmployee({
+          params: {
+            idEmployee: employee.id,
+          },
+          body: {
+            ...formData,
+            departmentId: +formData.departmentId,
+          },
         });
         handleClose();
       }

@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Modal, Button, Form } from "react-bootstrap";
 import { addNewEmployeeToDepartment } from "../../api/employees.api";
 import { useParams } from "react-router-dom";
-import { Position } from "../../shared/interfaces/employee";
+import { Position } from "../../api/types";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 

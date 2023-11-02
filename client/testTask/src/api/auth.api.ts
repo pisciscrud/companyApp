@@ -1,5 +1,4 @@
-import { AuthUserDTO } from "../shared/User";
-import { trpc } from "../utils/trpcClient";
+import { trpc, RouterInputs } from "../utils/trpcClient";
 
 export const authHeader = () => {
   const tokenStr = localStorage.getItem("token");
@@ -11,12 +10,12 @@ export const authHeader = () => {
     return {};
   }
 };
+type AuthUserOptions = RouterInputs["auth"]["signIn"];
 
-export const loginUser = async (input: AuthUserDTO) => {
+export const loginUser = async (input: AuthUserOptions) => {
   try {
     const response = await trpc.auth.signIn.mutate({
-      email: input.email,
-      password: input.password,
+      ...input,
     });
 
     localStorage.setItem("token", (response.data.data as { jwt: string }).jwt);

@@ -42,7 +42,7 @@ const AddDepartamentModal: React.FC<AddDepartmentModalProps> = ({
 
       if (validationResult.success) {
         if (!id) return;
-        await addNewDepartment(+id, formData);
+        await addNewDepartment({ ...formData, companyId: +id });
         hanleCloseModal();
       }
     } catch (err) {

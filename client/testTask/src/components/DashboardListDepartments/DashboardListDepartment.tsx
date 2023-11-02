@@ -1,8 +1,8 @@
 import styles from "../DashboardListEmployee/DashboardListEmployee.module.css";
-import { Department } from "../../shared/interfaces/department";
+import { GetFiveLargestDepartamentsOutput } from "../../api/types";
 
 interface DashboardListDepartamentProps {
-  departments: Department[];
+  departments: GetFiveLargestDepartamentsOutput;
 }
 
 const DashboardListDepartament: React.FC<DashboardListDepartamentProps> = ({

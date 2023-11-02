@@ -1,72 +1,66 @@
 import { trpc } from "../utils/trpcClient";
 import {
-  CreateDepartmentDTO,
-  Department,
-  UpdateDepartamentDTO,
-} from "../shared/interfaces/department";
+  deleteDepartamentInput,
+  DepartmentCreateInput,
+  GetAllDepartaments,
+  GetDepartmnetOutput,
+  GetDepartmnetsOutput,
+  GetFiveLargestDepartamentsOutput,
+  GetFiveLargestDepartmentInput,
+  GetInfoAboutDepartment,
+  UpdateDepartammentInput,
+} from "./types";
 
 export const getFiveLargestDepartaments = async (
-  idCompany: number
-): Promise<Department[]> => {
+  idCompany: GetFiveLargestDepartmentInput
+): Promise<GetFiveLargestDepartamentsOutput> => {
   try {
-    const {
-      data: { result },
-    } = await trpc.departament.findLargestDepartaments.query({
-      idCompany: +idCompany,
+    const departaments = await trpc.departament.findLargestDepartaments.query({
+      ...idCompany,
     });
-    return result;
+    return Object.entries(departaments).map(([key, value]) => value);
   } catch (e) {
-    return new Array<Department>();
+    return new Array();
   }
 };
 
 export const getAllDepartaments = async (
-  idCompany: number
-): Promise<Department[]> => {
+  idCompany: GetAllDepartaments
+): Promise<GetDepartmnetsOutput> => {
   try {
-    const { data } = await trpc.departament.allDepartamentsOfCompany.query({
-      idCompany: +idCompany,
+    const data = await trpc.departament.allDepartamentsOfCompany.query({
+      ...idCompany,
     });
-    return data.result;
+    return Object.entries(data).map(([key, value]) => value);
   } catch (e) {
-    return new Array<Department>();
+    return new Array();
   }
 };
 
-export const getInfoAboutDepartment = async (idDepartment: number) => {
+export const getInfoAboutDepartment = async (
+  idDepartment: GetInfoAboutDepartment
+): Promise<GetDepartmnetOutput> => {
   return await trpc.departament.findInfoAboutDepartament.query({
-    idDepartament: +idDepartment,
+    ...idDepartment,
   });
 };
 
-export const deleteDepartament = async (idDepartament: number) => {
+export const deleteDepartament = async (
+  idDepartament: deleteDepartamentInput
+) => {
   await trpc.departament.deleteDepartament.mutate({
-    idDepartament: +idDepartament,
+    ...idDepartament,
   });
 };
 
-export const updateDepartament = async (
-  id: number,
-  input: UpdateDepartamentDTO
-) => {
+export const updateDepartament = async (input: UpdateDepartammentInput) => {
   await trpc.departament.updateDepartamnet.mutate({
-    paramDepartament: {
-      idDepartament: +id,
-    },
-    body: {
-      name: input.name,
-      description: input.description,
-    },
+    ...input,
   });
 };
 
-export const addNewDepartment = async (
-  id: number,
-  input: CreateDepartmentDTO
-) => {
+export const addNewDepartment = async (input: DepartmentCreateInput) => {
   await trpc.departament.addNewDeraptament.mutate({
-    name: input.name,
-    description: input.description,
-    companyId: +id,
+    ...input,
   });
 };

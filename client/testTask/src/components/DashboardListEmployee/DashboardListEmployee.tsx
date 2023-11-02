@@ -1,8 +1,8 @@
 import styles from "./DashboardListEmployee.module.css";
-import { Employee } from "../../shared/interfaces/employee";
+import { GetFiveNewestEmployeesOfCompanyOutput } from "../../api/types";
 
 interface DashboardListEmployeeProps {
-  employees: Employee[];
+  employees: GetFiveNewestEmployeesOfCompanyOutput;
 }
 
 const DashboardListEmployee: React.FC<DashboardListEmployeeProps> = ({

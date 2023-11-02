@@ -1,28 +1,33 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getFiveLargestDepartaments } from "../../api/departaments.api";
-import { getFiveNewestEmployeesOfCompany } from "../../api/employees.api";
+import {
+  GetFiveLargestDepartamentsOutput,
+  GetFiveNewestEmployeesOfCompanyOutput,
+} from "../../api/types";
+
 import {
   DashboardListDepartament,
   DashboardListEmployee,
   DepartmentChart,
 } from "../../components/index";
 import styles from "./DashboardPage.module.css";
-import { Employee } from "../../shared/interfaces/employee";
-import { Department } from "../../shared/interfaces/department";
+import { getFiveLargestDepartaments } from "../../api/departaments.api";
+import { getFiveNewestEmployeesOfCompany } from "../../api/employees.api";
 
 const DashboardPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [employees, setEmployees] = useState<Employee[]>([]);
-  const [departaments, setDepartments] = useState<Department[]>([]);
+  const [employees, setEmployees] =
+    useState<GetFiveNewestEmployeesOfCompanyOutput>([]);
+  const [departaments, setDepartments] =
+    useState<GetFiveLargestDepartamentsOutput>([]);
 
   const fetchData = async (id: number) => {
     const [departaments, employees] = await Promise.all([
-      getFiveLargestDepartaments(id),
-      getFiveNewestEmployeesOfCompany(id),
+      getFiveLargestDepartaments({ idCompany: id }),
+      getFiveNewestEmployeesOfCompany({ companyId: id }),
     ]);
     setDepartments(departaments);
-    setEmployees(employees.data.result);
+    setEmployees(employees);
   };
 
   useEffect(() => {
@@ -36,7 +41,7 @@ const DashboardPage: React.FC = () => {
         <h1 style={{ textAlign: "center" }}>Dashboard</h1>
         <div className={styles.conteinerItem}>
           <DashboardListDepartament departments={departaments} />
-          <DashboardListEmployee employees={employees}/>
+          <DashboardListEmployee employees={employees} />
           <DepartmentChart departments={departaments} />
         </div>
       </div>

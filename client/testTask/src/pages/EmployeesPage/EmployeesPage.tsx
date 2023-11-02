@@ -7,24 +7,31 @@ import {
   deleteEmployee,
 } from "../../api/employees.api";
 import {
-  EmployeeSearch,
   AddEmployeeModal,
   UpdateEmployeeModal,
+  Tooltip,
 } from "../../components/index";
 import styles from "./EmployeePage.module.css";
 import { Trash, PencilSquare } from "react-bootstrap-icons";
 import { getAllDepartaments } from "../../api/departaments.api";
-import { Employee } from "../../shared/interfaces/employee";
-import { Department } from "../../shared/interfaces/department";
+import { useDebounce } from "@uidotdev/usehooks";
+import { Form, FormControl } from "react-bootstrap";
+import {
+  GetDepartmnetsOutput,
+  GetEmployeesByNameOutput,
+} from "../../api/types";
 
 const EmployeeTable: React.FC = () => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employees, setEmployees] = useState<GetEmployeesByNameOutput>();
   const { id } = useParams<{ id: string }>();
   const [showModal, setShowModal] = useState(false);
   const [isModalClosed, setIsModalClosed] = useState(false);
-  const [departments, setDepartments] = useState<Department[]>([]);
+  const [departments, setDepartments] = useState<GetDepartmnetsOutput>([]);
   const [modalStates, setModalStates] = useState<boolean[]>([]);
   const [isModalClosed1] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+  const [isSearching, setIsSearching] = useState(false);
 
   const handleOpenModalUpdateEmployee = (index: number) => {
     setModalStates((prevStates) => {
@@ -56,33 +63,32 @@ const EmployeeTable: React.FC = () => {
     try {
       if (!id) return;
       const [employees, departments] = await Promise.all([
-        getAllEmployeesOfCompany(+id),
-        getAllDepartaments(+id),
+        getAllEmployeesOfCompany({ companyId: +id }),
+        getAllDepartaments({ idCompany: +id }),
       ]);
-      setModalStates(new Array(employees.data.result.length).fill(false));
+      setModalStates(new Array(employees.length).fill(false));
       if (departments) {
         setDepartments(departments);
       }
-      setEmployees(employees.data.result);
+      setEmployees(employees);
     } catch (error) {
       console.error(error);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
+
   useEffect(() => {
     if (isModalClosed) {
       fetchData();
       setIsModalClosed(false);
     }
   }, [isModalClosed]);
-  const handleSearch = async (name: string) => {
-    const response = await getEmployeesByName(name);
-    setEmployees(response.data.result);
-  };
+
   const handleDeleteEmployee = async (idEmployee: number) => {
-    await deleteEmployee(idEmployee);
+    await deleteEmployee({ idEmployee });
     fetchData();
   };
 
@@ -92,12 +98,27 @@ const EmployeeTable: React.FC = () => {
       setIsModalClosed(false);
     }
   }, [isModalClosed1]);
+
   useEffect(() => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const searchHN = async () => {
+      let results;
+      setIsSearching(true);
+      const data = await getEmployeesByName({ name: debouncedSearchTerm });
+      results = data;
+      setIsSearching(false);
+      setEmployees(results);
+    };
+
+    searchHN();
+  }, [debouncedSearchTerm]);
+
   return (
     <>
+      {isSearching && <div>Searching ...</div>}
       <div className={styles.headerContainer}>
         <h1 style={{ marginLeft: "30px" }}>Employees of Company</h1>
         <Button
@@ -106,7 +127,15 @@ const EmployeeTable: React.FC = () => {
         >
           Add employee
         </Button>
-        <EmployeeSearch handleSearch={handleSearch} />
+        <Form style={{ marginTop: "15px" }}>
+          <FormControl
+            name="search"
+            type="input"
+            placeholder="Search by name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </Form>
       </div>
       <div style={{ marginTop: "15px" }}>
         <Table striped bordered>
@@ -123,38 +152,59 @@ const EmployeeTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {employees.map((employee, index) => (
-              <tr key={employee.id}>
-                <td>{employee.firstName}</td>
-                <td>{employee.lastName}</td>
-                <td>{employee.position}</td>
-                <td>{new Date(employee.createdAt).toLocaleString()}</td>
-                <td>{new Date(employee.updatedAt).toLocaleString()}</td>
-                <td>{employee.department?.name}</td>
-                <td>
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => handleDeleteEmployee(employee.id)}
-                  >
-                    <Trash />
-                  </button>
-                </td>
-                <td>
-                  <button
-                    className={styles.deleteButton}
-                    onClick={() => handleOpenModalUpdateEmployee(index)}
-                  >
-                    <PencilSquare />
-                  </button>
-                  <UpdateEmployeeModal
-                    showModal={modalStates[index]}
-                    handleClose={() => handleCloseModalUpdateEmployee(index)}
-                    employee={employee}
-                    departments={departments}
-                  />
-                </td>
-              </tr>
-            ))}
+            {employees &&
+              employees.map((employee, index) => (
+                <tr key={employee.id}>
+                  <td>
+                    <Tooltip text="Manage employee">
+                      <a
+                        key={employee.id}
+                        href={`employees/info/${employee.id}`}
+                        className={styles.linkToEmployee}
+                      >
+                        {employee.firstName}
+                      </a>
+                    </Tooltip>
+                  </td>
+                  <td>{employee.lastName}</td>
+                  <td>{employee.position}</td>
+                  <td>{new Date(employee.createdAt).toLocaleString()}</td>
+                  <td>{new Date(employee.updatedAt).toLocaleString()}</td>
+                  <td>
+                    <Tooltip text="Manage department">
+                      <a
+                        key={employee.id}
+                        href={`departaments/info/${employee.department?.id}`}
+                        className={styles.linkToEmployee}
+                      >
+                        {employee.department?.name}
+                      </a>
+                    </Tooltip>
+                  </td>
+                  <td>
+                    <button
+                      className={styles.deleteButton}
+                      onClick={() => handleDeleteEmployee(employee.id)}
+                    >
+                      <Trash />
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className={styles.deleteButton}
+                      onClick={() => handleOpenModalUpdateEmployee(index)}
+                    >
+                      <PencilSquare />
+                    </button>
+                    <UpdateEmployeeModal
+                      showModal={modalStates[index]}
+                      handleClose={() => handleCloseModalUpdateEmployee(index)}
+                      employee={employee}
+                      departments={departments}
+                    />
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </Table>
         <AddEmployeeModal

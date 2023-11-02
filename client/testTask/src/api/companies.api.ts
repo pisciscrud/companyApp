@@ -1,20 +1,17 @@
 import { trpc } from "../utils/trpcClient";
-import { CreateCompanyDTO } from "../shared/interfaces/company";
+import { CompaniesOutput, CompanyCreateOptions, CompanyDeleteOptions } from "./types";
 
-export const getAllCompanies = async () => {
+export const getAllCompanies = async (): Promise<CompaniesOutput> => {
   const companies = await trpc.company.allCompanies.query();
-  return companies;
+  return Object.entries(companies).map(([key, value]) => value);
 };
 
-export const addNewCompany = async (input: CreateCompanyDTO) => {
-  await trpc.company.addCompany.mutate({
-    name: input.name,
-    description: input.description,
-  });
+export const addNewCompany = async (input: CompanyCreateOptions) => {
+  await trpc.company.addCompany.mutate({ ...input });
 };
 
-export const deleteCompany = async (input: number) => {
+export const deleteCompany = async (input: CompanyDeleteOptions) => {
   await trpc.company.deleteCompany.mutate({
-    companyId: input,
+    ...input,
   });
 };

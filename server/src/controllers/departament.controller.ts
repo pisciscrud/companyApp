@@ -13,10 +13,7 @@ export class DepartamentController {
     try {
       const result = await DepartamentService.getAllDepartaments();
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
@@ -39,10 +36,7 @@ export class DepartamentController {
         paramsInput.idDepartament
       );
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
@@ -65,10 +59,7 @@ export class DepartamentController {
         paramsInput.idCompany
       );
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
@@ -88,10 +79,7 @@ export class DepartamentController {
           paramsInput.idCompany
         );
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
@@ -137,10 +125,7 @@ export class DepartamentController {
         input
       );
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;

@@ -4,10 +4,10 @@ import styles from "./company.module.css";
 import { CompanyItem, AddCompanyModal } from "../../components/index";
 import { PlusCircle } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
-import { Company } from "../../shared/interfaces/company";
+import { CompaniesOutput } from "../../api/types";
 
 const CompaniesPage: React.FC = () => {
-  const [companies, setCompanies] = useState<Company[]>();
+  const [companies, setCompanies] = useState<CompaniesOutput>();
   const [showModal, setShowModal] = useState(false);
   const [isModalClosed, setIsModalClosed] = useState(false);
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ const CompaniesPage: React.FC = () => {
   const fetchData = async () => {
     try {
       const response = await getAllCompanies();
-      setCompanies(response.data.result);
+      setCompanies(response);
     } catch (error) {
       console.error(error);
     }
@@ -41,7 +41,7 @@ const CompaniesPage: React.FC = () => {
   }, []);
 
   const handleDelete = async (itemId: number) => {
-    await deleteCompany(itemId);
+    await deleteCompany({ companyId: itemId });
     fetchData();
   };
 

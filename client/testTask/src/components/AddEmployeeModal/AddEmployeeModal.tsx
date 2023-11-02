@@ -4,13 +4,16 @@ import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addNewEmployee } from "../../api/employees.api";
-import { Department } from "../../shared/interfaces/department";
-import { Position } from "../../shared/interfaces/employee";
+import {
+  GetDepartmnetsOutput,
+  GetDepartmnetOutput,
+  Position,
+} from "../../api/types";
 
 interface AddEmployeeModalProps {
   showModal: boolean;
   handleClose: () => void;
-  departments: Department[];
+  departments: GetDepartmnetsOutput;
 }
 
 const schema = z.object({
@@ -42,13 +45,15 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
   const [currentFirstName, setCurrentFirstName] = useState("");
   const [currentLastName, setCurrentLastName] = useState("");
   const [currentPosition, setCurrentPosition] = useState(Position.HEAD);
-  const [currentDepartment, setCurrentDepartment] = useState<number|undefined>(departments[0]?.id);
+  const [currentDepartment, setCurrentDepartment] = useState<
+    number | undefined
+  >(departments[0]?.id);
   const [error, setError] = useState("");
 
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
-  
+
       if (validationResult.success) {
         await addNewEmployee({
           ...formData,
@@ -140,7 +145,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
               onChange={(e) => setCurrentDepartment(+e.target.value)}
               isInvalid={!!errors.departmentId}
             >
-              {departments.map((department: Department) => (
+              {departments.map((department: Required<GetDepartmnetOutput>) => (
                 <option key={department.id} value={department.id}>
                   {department.name}
                 </option>
@@ -155,7 +160,8 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
           <div style={{ textAlign: "center" }}>
             <Button
               style={{ margin: "10px", backgroundColor: "rgb(19, 38, 98)" }}
-              type="submit">
+              type="submit"
+            >
               Add
             </Button>
           </div>

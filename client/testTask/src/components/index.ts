@@ -10,4 +10,5 @@ export { default as Login } from "./Login/LoginForm";
 export { default as NavHeader } from "./NavHeader/NavHeader";
 export { default as UpdateDepartmentModal } from "./UpdateDepartamentModal/UpdateDepartamentModal";
 export { default as UpdateEmployeeModal } from "./UpdateEmployeeModal/UpdateEmployeeModal";
-export { default as AddEmployeeToDepartment} from './AddEmployeeToDepartment/AddEmployeeToDepartment';
+export { default as AddEmployeeToDepartment } from "./AddEmployeeToDepartment/AddEmployeeToDepartment";
+export { default as Tooltip } from "./Tooltip";

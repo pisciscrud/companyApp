@@ -133,25 +133,33 @@ export class EmployeeService {
   }
 
   static async getInfoAboutEmployee(id: number) {
-    const findedEmployee = await prisma.employee.findFirst({
+    const foundEmployee = await prisma.employee.findFirst({
       where: {
         id: id,
       },
     });
-    if (!findedEmployee)
+    if (!foundEmployee)
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: `[EmployeeService getInfoAboutEmployee] employee doesn't exist`,
       });
-    const findedEmployees = await prisma.employee.findUnique({
+    const foundEmployees = await prisma.employee.findUnique({
       where: {
         id: id,
       },
+      include: {
+        department: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
     });
-    return findedEmployees;
+    return foundEmployees;
   }
 
-  static async getEmployeesOfCompany(id: number): Promise<Employee[]> {
+  static async getEmployeesOfCompany(id: number) {
     const employees = await prisma.employee.findMany({
       where: {
         department: {

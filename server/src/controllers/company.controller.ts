@@ -11,10 +11,7 @@ export class CompanyController {
     try {
       const result = await CompanyService.getAllCompanies();
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
@@ -29,10 +26,7 @@ export class CompanyController {
     try {
       const result = await CompanyService.addNewCompany(input);
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
@@ -58,10 +52,7 @@ export class CompanyController {
         input
       );
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
@@ -106,8 +97,7 @@ export class CompanyController {
         paramsInput.companyId
       );
       return {
-        status: "success",
-        data: result,
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;

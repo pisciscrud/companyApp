@@ -4,12 +4,12 @@ import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateDepartament } from "../../api/departaments.api";
-import { Department } from "../../../src/shared/interfaces/department";
+import { GetDepartmnetOutput } from "../../api/types";
 
 interface AddCompanyModalProps {
   showModal: boolean;
   handleClose: () => void;
-  updateInfo: Department;
+  updateInfo: Required<GetDepartmnetOutput>;
 }
 
 const schema = z.object({
@@ -44,7 +44,14 @@ const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
       const validationResult = schema.safeParse(formData);
 
       if (validationResult.success) {
-        await updateDepartament(updateInfo.id, formData);
+        await updateDepartament({
+          body: {
+            ...formData,
+          },
+          paramDepartament: {
+            idDepartament: updateInfo.id,
+          },
+        });
         handleClose();
       }
     } catch (err) {

@@ -107,10 +107,7 @@ export class EmployeeController {
     try {
       const result = await EmployeeService.getEmployessByName(paramInput.name);
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
@@ -133,10 +130,7 @@ export class EmployeeController {
         paramsInput.idEmployee
       );
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
@@ -154,17 +148,14 @@ export class EmployeeController {
   }: {
     paramsInput: ParamsInputCompany;
   }) {
-    try 
-    {
-      const result = await EmployeeService.getEmployeesOfCompany(paramsInput.companyId);
+    try {
+      const result = await EmployeeService.getEmployeesOfCompany(
+        paramsInput.companyId
+      );
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
-    }
-    catch (error: any) {
+    } catch (error: any) {
       if (error instanceof TRPCError) throw error;
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
@@ -179,27 +170,22 @@ export class EmployeeController {
     paramsInput,
   }: {
     paramsInput: ParamsInputCompany;
-  })
-{
-  try 
-  {
-    const result = await EmployeeService.getFiveNewestEmployeesOfCompany(paramsInput.companyId);
+  }) {
+    try {
+      const result = await EmployeeService.getFiveNewestEmployeesOfCompany(
+        paramsInput.companyId
+      );
       return {
-        status: "success",
-        data: {
-          result,
-        },
+        ...result,
       };
-
+    } catch (error: any) {
+      if (error instanceof TRPCError) throw error;
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `[EmployeeController getEmployeesOfCompany] ${
+          error?.message || error?.stack
+        }`,
+      });
+    }
   }
-  catch (error: any) {
-    if (error instanceof TRPCError) throw error;
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: `[EmployeeController getEmployeesOfCompany] ${
-        error?.message || error?.stack
-      }`,
-    });
-  }
-}
 }

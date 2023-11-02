@@ -10,13 +10,14 @@ import styles from "./DepartamentPage.module.css";
 import {
   UpdateDepartmentModal,
   AddDepartmentModal,
+  Tooltip,
 } from "../../components/index";
-import { Department } from "../../shared/interfaces/department";
+import { GetDepartmnetsOutput } from "../../api/types";
 
 const DepartmentPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
-  const [departments, setDepartments] = useState<Department[]>([]);
+  const [departments, setDepartments] = useState<GetDepartmnetsOutput>([]);
   const [modalStates, setModalStates] = useState<boolean[]>([]);
   const [isModalClosed, setIsModalClosed] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -24,7 +25,7 @@ const DepartmentPage: React.FC = () => {
   const fetchData = async () => {
     try {
       if (!id) return;
-      const response = await getAllDepartaments(+id);
+      const response = await getAllDepartaments({ idCompany: +id });
       if (!response) return;
       setDepartments(response);
       setModalStates(new Array(response.length).fill(false));
@@ -34,7 +35,7 @@ const DepartmentPage: React.FC = () => {
   };
 
   const handleDeleteDepartament = async (idDepartament: number) => {
-    await deleteDepartament(idDepartament);
+    await deleteDepartament({ idDepartament: idDepartament });
     fetchData();
   };
 
@@ -101,7 +102,18 @@ const DepartmentPage: React.FC = () => {
         <tbody>
           {departments.map((department, index) => (
             <tr key={department.id}>
-              <td>{department.name}</td>
+              <td>
+                <Tooltip text="Manage department">
+                  <a
+                    key={department.id}
+                    className={styles.linkDepartment}
+                    href={`departaments/info/${department.id}`}
+                  >
+                    {department.name}
+                  </a>
+                </Tooltip>
+              </td>
+
               <td>{department.description}</td>
               <td>{new Date(department.createdAt).toLocaleString()}</td>
               <td>{new Date(department.updatedAt).toLocaleString()}</td>
@@ -111,7 +123,13 @@ const DepartmentPage: React.FC = () => {
                   {department.employees?.map((employee) => (
                     <div key={employee.id}>
                       <li>
-                        {employee.firstName} {employee.lastName}
+                        <a
+                          key={employee.id}
+                          href={`/main/${department.companyId}/employees/info/${employee.id}`}
+                          style={{ color: "black" }}
+                        >
+                          {employee.firstName} {employee.lastName}
+                        </a>
                       </li>
                       {employee.position === "HEAD" ? (
                         <p
