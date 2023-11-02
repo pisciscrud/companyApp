@@ -152,6 +152,7 @@ export class EmployeeService {
           select: {
             id: true,
             name: true,
+            companyId:true,
           },
         },
       },

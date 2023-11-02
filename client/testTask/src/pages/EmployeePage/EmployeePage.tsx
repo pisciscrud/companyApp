@@ -23,9 +23,15 @@ const EmployeePage = () => {
       <Container style={{ margin: "30px" }}>
         <h1>Personal Info</h1>
         <h3>
-          Name: {employee.firstName} {employee.lastName}
+          Full Name: {employee.firstName} {employee.lastName}
         </h3>
-        <h3>Department: {employee.department?.name}</h3>
+        <h3>Position: {employee.position}</h3>
+        <a
+          style={{ color: "black" }}
+          href={`/main/${employee.department?.companyId}/departaments/info/${employee.departmentId}`}
+        >
+          <h3>Department: {employee.department?.name}</h3>
+        </a>
         <h4>
           Date the specialist was added to the database:{" "}
           {new Date(employee.createdAt!).toLocaleString()}
