@@ -3,13 +3,13 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { updateEmployee } from "../../api/employees.api";
+
 import {
   GetDepartmnetsOutput,
   GetInfoAboutEmployeeOutput,
   Position,
 } from "../../api/types";
-
+import { trpc } from "../../utils/trpcClient";
 
 interface UpdateEmployeeModalProps {
   showModal: boolean;
@@ -52,14 +52,15 @@ const UpdateEmployeeModal: React.FC<UpdateEmployeeModalProps> = ({
     number | undefined
   >(employee.department?.id);
   const [error, setError] = useState("");
+  const mutationUpdateEmployee = trpc.employee.updateEmployee.useMutation();
 
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
       if (validationResult.success) {
-        await updateEmployee({
+        await mutationUpdateEmployee.mutateAsync({
           params: {
-            idEmployee: employee.id,
+            employeeId: employee.id,
           },
           body: {
             ...formData,

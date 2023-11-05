@@ -1,22 +1,18 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getInfoAboutDepartment } from "../../api/departaments.api";
 import { AddEmployeeToDepartment, Tooltip } from "../../components";
 import { Button } from "react-bootstrap";
 import styles from "./DepartmentPage.module.css";
-import { GetDepartmnetOutput } from "../../api/types";
+import { trpc } from "../../utils/trpcClient";
 
 const DepartmentPage = () => {
-  const { idDepartment } = useParams<{ idDepartment: string }>();
-  const [department, setDepartment] = useState<GetDepartmnetOutput | null>();
+  const { departmentId } = useParams<{ departmentId: string }>();
   const [isModalClosed, setIsModalClosed] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const department = trpc.departament.findInfoAboutDepartament.useQuery({
+    departmentId: +departmentId!,
+  });
 
-  const fetchData = async (idDepartment: number) => {
-    const res = await getInfoAboutDepartment({ idDepartament: +idDepartment });
-    if (!res) return;
-    setDepartment(res);
-  };
   const handleCloseModal = () => {
     setShowModal(false);
     setIsModalClosed(true);
@@ -25,32 +21,29 @@ const DepartmentPage = () => {
   const handleOpenModal = () => {
     setShowModal(true);
   };
-  useEffect(() => {
-    if (!idDepartment) return;
-    fetchData(+idDepartment);
-  }, []);
+
   useEffect(() => {
     if (isModalClosed) {
-      if (!idDepartment) return;
-      fetchData(+idDepartment);
+      if (!departmentId) return;
+      department.refetch();
       setIsModalClosed(false);
     }
   }, [isModalClosed]);
 
-  return department ? (
+  return department.data ? (
     <>
       <div className={styles.container}>
         <h1>Department Info</h1>
-        <h3>Name: {department.name}</h3>
-        <h3>Description : {department.description}</h3>
+        <h3>Name: {department.data.name}</h3>
+        <h3>Description : {department.data.description}</h3>
         <div>
-          <h3>Count of employees: {department.employees?.length}</h3>
+          <h3>Count of employees: {department.data.employees?.length}</h3>
           <ul>
-            {department.employees?.map((employee) => (
-              <Tooltip text="Manage employee">
+            {department.data.employees?.map((employee) => (
+              <Tooltip text="Manage employee" key={employee.id}>  
                 <a
                   key={employee.id}
-                  href={`/main/${department.companyId}/employees/info/${employee.id}`}
+                  href={`/main/${department.data.companyId}/employees/info/${employee.id}`}
                   style={{ color: "black" }}
                 >
                   <li>

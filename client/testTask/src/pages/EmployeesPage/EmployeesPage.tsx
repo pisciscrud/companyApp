@@ -2,36 +2,34 @@ import { useState, useEffect } from "react";
 import { Table, Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import {
-  getAllEmployeesOfCompany,
-  getEmployeesByName,
-  deleteEmployee,
-} from "../../api/employees.api";
-import {
   AddEmployeeModal,
   UpdateEmployeeModal,
   Tooltip,
 } from "../../components/index";
 import styles from "./EmployeePage.module.css";
 import { Trash, PencilSquare } from "react-bootstrap-icons";
-import { getAllDepartaments } from "../../api/departaments.api";
 import { useDebounce } from "@uidotdev/usehooks";
 import { Form, FormControl } from "react-bootstrap";
-import {
-  GetDepartmnetsOutput,
-  GetEmployeesByNameOutput,
-} from "../../api/types";
+import { trpc } from "../../utils/trpcClient";
 
 const EmployeeTable: React.FC = () => {
-  const [employees, setEmployees] = useState<GetEmployeesByNameOutput>();
   const { id } = useParams<{ id: string }>();
   const [showModal, setShowModal] = useState(false);
   const [isModalClosed, setIsModalClosed] = useState(false);
-  const [departments, setDepartments] = useState<GetDepartmnetsOutput>([]);
   const [modalStates, setModalStates] = useState<boolean[]>([]);
   const [isModalClosed1] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const [isSearching, setIsSearching] = useState(false);
+
+  const employees = trpc.employee.emplyeesByName.useQuery({
+    name: debouncedSearchTerm,
+    companyId: +id!,
+  });
+  const departments = trpc.departament.allDepartamentsOfCompany.useQuery({
+    companyId: +id!,
+  });
+
+  const mutationDelete = trpc.employee.deleteEmployee.useMutation();
 
   const handleOpenModalUpdateEmployee = (index: number) => {
     setModalStates((prevStates) => {
@@ -59,66 +57,33 @@ const EmployeeTable: React.FC = () => {
     setIsModalClosed(true);
   };
 
-  const fetchData = async () => {
-    try {
-      if (!id) return;
-      const [employees, departments] = await Promise.all([
-        getAllEmployeesOfCompany({ companyId: +id }),
-        getAllDepartaments({ idCompany: +id }),
-      ]);
-      setModalStates(new Array(employees.length).fill(false));
-      if (departments) {
-        setDepartments(departments);
-      }
-      setEmployees(employees);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   useEffect(() => {
     if (isModalClosed) {
-      fetchData();
+      const refetchData = async () => {
+        await employees.refetch();
+      };
+      refetchData();
       setIsModalClosed(false);
     }
   }, [isModalClosed]);
 
-  const handleDeleteEmployee = async (idEmployee: number) => {
-    await deleteEmployee({ idEmployee });
-    fetchData();
+  const handleDeleteEmployee = async (employeeId: number) => {
+    await mutationDelete.mutateAsync({ employeeId });
+    employees.refetch();
   };
 
   useEffect(() => {
     if (isModalClosed1) {
-      fetchData();
       setIsModalClosed(false);
     }
   }, [isModalClosed1]);
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const searchHN = async () => {
-      let results;
-      setIsSearching(true);
-      const data = await getEmployeesByName({ name: debouncedSearchTerm });
-      results = data;
-      setIsSearching(false);
-      setEmployees(results);
-    };
-
-    searchHN();
+    employees.refetch();
   }, [debouncedSearchTerm]);
 
   return (
     <>
-      {isSearching && <div>Searching ...</div>}
       <div className={styles.headerContainer}>
         <h1 style={{ marginLeft: "30px" }}>Employees of Company</h1>
         <Button
@@ -153,7 +118,9 @@ const EmployeeTable: React.FC = () => {
           </thead>
           <tbody>
             {employees &&
-              employees.map((employee, index) => (
+              departments.data &&
+              employees.data &&
+              employees.data.map((employee, index) => (
                 <tr key={employee.id}>
                   <td>
                     <Tooltip text="Manage employee">
@@ -200,18 +167,20 @@ const EmployeeTable: React.FC = () => {
                       showModal={modalStates[index]}
                       handleClose={() => handleCloseModalUpdateEmployee(index)}
                       employee={employee}
-                      departments={departments}
+                      departments={departments.data}
                     />
                   </td>
                 </tr>
               ))}
           </tbody>
         </Table>
-        <AddEmployeeModal
-          departments={departments}
-          showModal={showModal}
-          handleClose={handleCloseModalAddEmployee}
-        ></AddEmployeeModal>
+        {departments.data && (
+          <AddEmployeeModal
+            departments={departments.data}
+            showModal={showModal}
+            handleClose={handleCloseModalAddEmployee}
+          />
+        )}
       </div>
     </>
   );

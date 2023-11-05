@@ -3,8 +3,8 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { updateDepartament } from "../../api/departaments.api";
 import { GetDepartmnetOutput } from "../../api/types";
+import { trpc } from "../../utils/trpcClient";
 
 interface AddCompanyModalProps {
   showModal: boolean;
@@ -39,17 +39,21 @@ const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
   const [currentDescription, setCurrentDescription] = useState(
     updateInfo.description
   );
+
+  const mutationUpdateDepartment =
+    trpc.departament.updateDepartamnet.useMutation();
+
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
 
       if (validationResult.success) {
-        await updateDepartament({
+        await mutationUpdateDepartment.mutateAsync({
           body: {
             ...formData,
           },
           paramDepartament: {
-            idDepartament: updateInfo.id,
+            departmentId: updateInfo.id,
           },
         });
         handleClose();

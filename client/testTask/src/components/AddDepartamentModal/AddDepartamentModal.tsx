@@ -3,7 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addNewDepartment } from "../../api/departaments.api";
+import { trpc } from "../../utils/trpcClient";
 
 interface AddDepartmentModalProps {
   showModal: boolean;
@@ -35,14 +35,18 @@ const AddDepartamentModal: React.FC<AddDepartmentModalProps> = ({
     resetField,
     formState: { isSubmitting, errors, isDirty },
   } = useForm<FormSchema>({ resolver: zodResolver(schema) });
-
+  const mutationAddDepartament =
+    trpc.departament.addNewDeraptament.useMutation();
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
 
       if (validationResult.success) {
         if (!id) return;
-        await addNewDepartment({ ...formData, companyId: +id });
+        await mutationAddDepartament.mutateAsync({
+          ...formData,
+          companyId: +id,
+        });
         hanleCloseModal();
       }
     } catch (err) {

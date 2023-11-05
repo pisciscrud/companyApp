@@ -15,10 +15,11 @@ export const CreateEmployeeSchema = object({
 });
 
 export const employeeParams = object({
-  idEmployee: number(),
+  employeeId: number(),
 });
 
 export const paramName = object({
+  companyId: number(),
   name: string(),
 });
 
@@ -32,13 +33,10 @@ export const UpdateEmployeeSchema = object({
   }).partial(),
 });
 
-export const filterQuery = object({
-  limit: number().default(1),
-  page: number().default(10),
-});
+
 
 export type CreateEmployeeInput = TypeOf<typeof CreateEmployeeSchema>;
 export type ParamsInput = TypeOf<typeof employeeParams>;
 export type ParamInputName = TypeOf<typeof paramName>;
 export type UpdateEmployeeInput = TypeOf<typeof UpdateEmployeeSchema>["body"];
-export type FilterQueryInput = TypeOf<typeof filterQuery>;
+

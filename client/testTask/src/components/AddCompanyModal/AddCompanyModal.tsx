@@ -2,7 +2,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addNewCompany } from "../../api/companies.api";
+import { trpc } from "../../utils/trpcClient";
 
 interface AddCompanyModalProps {
   showModal: boolean;
@@ -32,12 +32,14 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({
     formState: { isSubmitting, errors, isDirty },
   } = useForm<FormSchema>({ resolver: zodResolver(schema) });
 
+  const mutation = trpc.company.addCompany.useMutation();
+
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
 
       if (validationResult.success) {
-        await addNewCompany(formData);
+        await mutation.mutateAsync(formData);
         hadleCloseModal();
       }
     } catch (err) {

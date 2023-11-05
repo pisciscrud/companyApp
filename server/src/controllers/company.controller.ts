@@ -10,9 +10,7 @@ export class CompanyController {
   static async getAll() {
     try {
       const result = await CompanyService.getAllCompanies();
-      return {
-        ...result,
-      };
+      return result;
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
       throw new TRPCError({

@@ -33,7 +33,7 @@ export class DepartamentController {
   }) {
     try {
       const result = await DepartamentService.getInfoAboutDepartament(
-        paramsInput.idDepartament
+        paramsInput.departmentId
       );
       return {
         ...result,
@@ -56,11 +56,9 @@ export class DepartamentController {
   }) {
     try {
       const result = await DepartamentService.getAllDepartamentsOfCompany(
-        paramsInput.idCompany
+        paramsInput.companyId
       );
-      return {
-        ...result,
-      };
+      return result;
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
       throw new TRPCError({
@@ -76,11 +74,9 @@ export class DepartamentController {
     try {
       const result =
         await DepartamentService.findFiveLargestDepartamentsOfCompany(
-          paramsInput.idCompany
+          paramsInput.companyId
         );
-      return {
-        ...result,
-      };
+      return result;
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
       throw new TRPCError({
@@ -121,7 +117,7 @@ export class DepartamentController {
   }) {
     try {
       const result = await DepartamentService.updateDepartament(
-        paramsInput.idDepartament,
+        paramsInput.departmentId,
         input
       );
       return {
@@ -144,7 +140,7 @@ export class DepartamentController {
     paramsInput: ParamsInput;
   }) {
     try {
-      await DepartamentService.deleteDepartament(paramsInput.idDepartament);
+      await DepartamentService.deleteDepartament(paramsInput.departmentId);
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
       throw new TRPCError({

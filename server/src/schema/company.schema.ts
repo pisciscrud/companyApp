@@ -21,6 +21,8 @@ export const UpdateCompanySchema = object({
   }).partial(),
 });
 
+
+
 export type CreateCompanyInput = TypeOf<typeof CreateCompanySchema>;
 export type ParamsInputCompany = TypeOf<typeof companyParams>;
 export type UpdateCompanyInput = TypeOf<typeof UpdateCompanySchema>["body"];

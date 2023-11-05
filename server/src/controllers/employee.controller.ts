@@ -61,7 +61,7 @@ export class EmployeeController {
   }) {
     try {
       const result = await EmployeeService.updateEmployee(
-        paramsInput.idEmployee,
+        paramsInput.employeeId,
         input
       );
       return {
@@ -83,7 +83,7 @@ export class EmployeeController {
 
   static async deleteEmployee({ paramsInput }: { paramsInput: ParamsInput }) {
     try {
-      await EmployeeService.deleteEmployee(paramsInput.idEmployee);
+      await EmployeeService.deleteEmployee(paramsInput.employeeId);
       return {
         status: "success",
         data: null,
@@ -105,10 +105,11 @@ export class EmployeeController {
     paramInput: ParamInputName;
   }) {
     try {
-      const result = await EmployeeService.getEmployessByName(paramInput.name);
-      return {
-        ...result,
-      };
+      const result = await EmployeeService.getEmployessByName(
+        paramInput.name,
+        paramInput.companyId
+      );
+      return result;
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
       throw new TRPCError({
@@ -127,7 +128,7 @@ export class EmployeeController {
   }) {
     try {
       const result = await EmployeeService.getInfoAboutEmployee(
-        paramsInput.idEmployee
+        paramsInput.employeeId
       );
       return {
         ...result,
@@ -152,9 +153,7 @@ export class EmployeeController {
       const result = await EmployeeService.getEmployeesOfCompany(
         paramsInput.companyId
       );
-      return {
-        ...result,
-      };
+      return result;
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
       throw new TRPCError({
@@ -175,9 +174,7 @@ export class EmployeeController {
       const result = await EmployeeService.getFiveNewestEmployeesOfCompany(
         paramsInput.companyId
       );
-      return {
-        ...result,
-      };
+      return result;
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
       throw new TRPCError({

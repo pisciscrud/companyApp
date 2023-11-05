@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Form, Button, Container } from "react-bootstrap";
-import { loginUser } from "../../api/auth.api";
 import styles from "./login.module.css";
 import { useNavigate } from "react-router";
 import { z } from "zod";
+import { trpc } from "../../utils/trpcClient";
 
 const LoginFormSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -21,10 +21,18 @@ const Login: React.FC = () => {
   } = useForm<LoginFormProps>();
 
   const [error, setError] = useState<{ message: string } | null>(null);
+  const mutation = trpc.auth.signIn.useMutation({
+    onSuccess: (response) => {
+      localStorage.setItem(
+        "token",
+        (response.data.data as { jwt: string }).jwt
+      );
+    },
+  });
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<LoginFormProps> = async (formData) => {
     try {
-      await loginUser(formData);
+      mutation.mutate(formData);
       navigate("/companies");
     } catch (err: any) {
       setError(err);

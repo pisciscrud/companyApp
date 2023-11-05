@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {
-  getAllDepartaments,
-  deleteDepartament,
-} from "../../api/departaments.api";
 import { Table, Button } from "react-bootstrap";
 import { Trash, PencilSquare } from "react-bootstrap-icons";
 import styles from "./DepartamentPage.module.css";
@@ -12,31 +8,22 @@ import {
   AddDepartmentModal,
   Tooltip,
 } from "../../components/index";
-import { GetDepartmnetsOutput } from "../../api/types";
+import { trpc } from "../../utils/trpcClient";
 
 const DepartmentPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
-  const [departments, setDepartments] = useState<GetDepartmnetsOutput>([]);
   const [modalStates, setModalStates] = useState<boolean[]>([]);
   const [isModalClosed, setIsModalClosed] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const departments = trpc.departament.allDepartamentsOfCompany.useQuery({
+    companyId: +id!,
+  });
+  const mutationDelete = trpc.departament.deleteDepartament.useMutation();
 
-  const fetchData = async () => {
-    try {
-      if (!id) return;
-      const response = await getAllDepartaments({ idCompany: +id });
-      if (!response) return;
-      setDepartments(response);
-      setModalStates(new Array(response.length).fill(false));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleDeleteDepartament = async (idDepartament: number) => {
-    await deleteDepartament({ idDepartament: idDepartament });
-    fetchData();
+  const handleDeleteDepartament = async (departmentId: number) => {
+    await mutationDelete.mutateAsync({ departmentId });
+    departments.refetch();
   };
 
   const handleOpenModal = (index: number) => {
@@ -67,17 +54,13 @@ const DepartmentPage: React.FC = () => {
 
   useEffect(() => {
     if (isModalClosed) {
-      fetchData();
+      const refetchData = async () => {
+        await departments.refetch();
+      };
+      refetchData();
       setIsModalClosed(false);
     }
   }, [isModalClosed]);
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   return (
     <>
@@ -100,79 +83,80 @@ const DepartmentPage: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {departments.map((department, index) => (
-            <tr key={department.id}>
-              <td>
-                <Tooltip text="Manage department">
-                  <a
-                    key={department.id}
-                    className={styles.linkDepartment}
-                    href={`departaments/info/${department.id}`}
-                  >
-                    {department.name}
-                  </a>
-                </Tooltip>
-              </td>
+          {departments.data &&
+            departments.data.map((department, index) => (
+              <tr key={department.id}>
+                <td>
+                  <Tooltip   key={department.id} text="Manage department">
+                    <a
+                      key={department.id}
+                      className={styles.linkDepartment}
+                      href={`departaments/info/${department.id}`}
+                    >
+                      {department.name}
+                    </a>
+                  </Tooltip>
+                </td>
 
-              <td>{department.description}</td>
-              <td>{new Date(department.createdAt).toLocaleString()}</td>
-              <td>{new Date(department.updatedAt).toLocaleString()}</td>
-              <td>
-                <p>Count of employees: {department.employees?.length}</p>
-                <ul>
-                  {department.employees?.map((employee) => (
-                    <div key={employee.id}>
-                      <li>
-                        <a
-                          key={employee.id}
-                          href={`/main/${department.companyId}/employees/info/${employee.id}`}
-                          style={{ color: "black" }}
-                        >
-                          {employee.firstName} {employee.lastName}
-                        </a>
-                      </li>
-                      {employee.position === "HEAD" ? (
-                        <p
-                          style={{
-                            color: "red",
-                            fontWeight: "bold",
-                            fontSize: "12px",
-                          }}
-                        >
-                          {employee.position}
-                        </p>
-                      ) : (
-                        <p style={{ fontSize: "12px", fontWeight: "bold" }}>
-                          {employee.position}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </ul>
-              </td>
-              <td>
-                <button
-                  className={styles.deleteButton}
-                  onClick={() => handleDeleteDepartament(department.id)}
-                >
-                  <Trash />
-                </button>
-              </td>
-              <td>
-                <button
-                  className={styles.deleteButton}
-                  onClick={() => handleOpenModal(index)}
-                >
-                  <PencilSquare />
-                </button>
-                <UpdateDepartmentModal
-                  showModal={modalStates[index]}
-                  handleClose={() => handleCloseModal(index)}
-                  updateInfo={department}
-                />
-              </td>
-            </tr>
-          ))}
+                <td>{department.description}</td>
+                <td>{new Date(department.createdAt).toLocaleString()}</td>
+                <td>{new Date(department.updatedAt).toLocaleString()}</td>
+                <td>
+                  <p>Count of employees: {department.employees?.length}</p>
+                  <ul>
+                    {department.employees?.map((employee) => (
+                      <div key={employee.id}>
+                        <li>
+                          <a
+                            key={employee.id}
+                            href={`/main/${department.companyId}/employees/info/${employee.id}`}
+                            style={{ color: "black" }}
+                          >
+                            {employee.firstName} {employee.lastName}
+                          </a>
+                        </li>
+                        {employee.position === "HEAD" ? (
+                          <p
+                            style={{
+                              color: "red",
+                              fontWeight: "bold",
+                              fontSize: "12px",
+                            }}
+                          >
+                            {employee.position}
+                          </p>
+                        ) : (
+                          <p style={{ fontSize: "12px", fontWeight: "bold" }}>
+                            {employee.position}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </ul>
+                </td>
+                <td>
+                  <button
+                    className={styles.deleteButton}
+                    onClick={() => handleDeleteDepartament(department.id)}
+                  >
+                    <Trash />
+                  </button>
+                </td>
+                <td>
+                  <button
+                    className={styles.deleteButton}
+                    onClick={() => handleOpenModal(index)}
+                  >
+                    <PencilSquare />
+                  </button>
+                  <UpdateDepartmentModal
+                    showModal={modalStates[index]}
+                    handleClose={() => handleCloseModal(index)}
+                    updateInfo={department}
+                  />
+                </td>
+              </tr>
+            ))}
         </tbody>
       </Table>
       <AddDepartmentModal

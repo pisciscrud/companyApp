@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Modal, Button, Form } from "react-bootstrap";
-import { addNewEmployeeToDepartment } from "../../api/employees.api";
 import { useParams } from "react-router-dom";
 import { Position } from "../../api/types";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { trpc } from "../../utils/trpcClient";
 
 const schema = z.object({
   firstName: z
@@ -37,22 +37,24 @@ const AddEmployeeToDepartment: React.FC<AddEmployeeModalProps> = ({
     reset,
   } = useForm<AddEmployeeFormValues>({ resolver: zodResolver(schema) });
 
-  const { idDepartment } = useParams<{ idDepartment: string }>();
+  const { departmentId } = useParams<{ departmentId: string }>();
 
   const [currentFirstName, setCurrentFirstName] = useState("");
   const [currentLastName, setCurrentLastName] = useState("");
   const [currentPosition, setCurrentPosition] = useState(Position.HEAD);
   const [error, setError] = useState<string | null>(null);
+  const mutationAddEmployeeToDepart = trpc.employee.addEmployee.useMutation();
+
 
   const onSubmit: SubmitHandler<AddEmployeeFormValues> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
-      if (!idDepartment) return;
+      if (!departmentId) return;
 
       if (validationResult.success) {
-        await addNewEmployeeToDepartment({
+        await mutationAddEmployeeToDepart.mutateAsync({
           ...formData,
-          departmentId: +idDepartment,
+          departmentId: +departmentId,
         });
         handleModalClose();
       }
@@ -136,7 +138,7 @@ const AddEmployeeToDepartment: React.FC<AddEmployeeModalProps> = ({
             <Button
               style={{ margin: "10px", backgroundColor: "rgb(19, 38, 98)" }}
               type="submit"
-              // disabled={!isDirty || isSubmitting}
+      
             >
               Add
             </Button>

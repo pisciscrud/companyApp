@@ -67,6 +67,9 @@ export class DepartamentService {
         updatedAt: true,
         companyId: true,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     return departaments;

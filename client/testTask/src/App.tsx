@@ -26,7 +26,7 @@ function App() {
           ></Route>
           <Route path="departaments" element={<DepartamentsPage />}></Route>
           <Route
-            path="departaments/info/:idDepartment"
+            path="departaments/info/:departmentId"
             element={<DepartmentPage />}
           ></Route>
         </Route>

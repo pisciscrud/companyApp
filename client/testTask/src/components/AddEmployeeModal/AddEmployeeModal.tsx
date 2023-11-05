@@ -3,7 +3,6 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addNewEmployee } from "../../api/employees.api";
 import {
   GetDepartmnetsOutput,
   GetDepartmnetOutput,
@@ -15,6 +14,7 @@ interface AddEmployeeModalProps {
   handleClose: () => void;
   departments: GetDepartmnetsOutput;
 }
+import { trpc } from "../../utils/trpcClient";
 
 const schema = z.object({
   firstName: z
@@ -39,6 +39,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
     register,
     handleSubmit,
     formState: { errors },
+    resetField,
     reset,
   } = useForm<FormSchema>({ resolver: zodResolver(schema) });
 
@@ -49,13 +50,13 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
     number | undefined
   >(departments[0]?.id);
   const [error, setError] = useState("");
+  const mutationAddEmployee = trpc.employee.addEmployee.useMutation();
 
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
       const validationResult = schema.safeParse(formData);
-
       if (validationResult.success) {
-        await addNewEmployee({
+        await mutationAddEmployee.mutateAsync({
           ...formData,
           departmentId: +formData.departmentId,
         });
@@ -68,13 +69,15 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
 
   const resetForm = () => {
     reset({});
-    setCurrentFirstName("");
-    setCurrentLastName("");
-    setCurrentPosition(Position.HEAD);
+    resetField("firstName");
+    resetField("lastName");
+    resetField("position");
+    resetField("departmentId");
     setError("");
   };
 
   const handleModalClose = () => {
+    reset({});
     resetForm();
     handleClose();
   };

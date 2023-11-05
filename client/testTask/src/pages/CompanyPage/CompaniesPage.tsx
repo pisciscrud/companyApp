@@ -1,15 +1,15 @@
-import { useEffect, useState } from "react";
-import { getAllCompanies, deleteCompany } from "../../api/companies.api";
+import React, { useEffect, useState } from "react";
 import styles from "./company.module.css";
 import { CompanyItem, AddCompanyModal } from "../../components/index";
 import { PlusCircle } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
-import { CompaniesOutput } from "../../api/types";
+import { trpc } from "../../utils/trpcClient";
 
 const CompaniesPage: React.FC = () => {
-  const [companies, setCompanies] = useState<CompaniesOutput>();
   const [showModal, setShowModal] = useState(false);
   const [isModalClosed, setIsModalClosed] = useState(false);
+  const companies = trpc.company.allCompanies.useQuery();
+  const mutation = trpc.company.deleteCompany.useMutation();
   const navigate = useNavigate();
 
   const handleOpenModal = () => {
@@ -21,39 +21,34 @@ const CompaniesPage: React.FC = () => {
     setIsModalClosed(true);
   };
 
-  const fetchData = async () => {
-    try {
-      const response = await getAllCompanies();
-      setCompanies(response);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
     if (isModalClosed) {
-      fetchData();
+      const refetchData = async () => {
+        await companies.refetch();
+      };
+      refetchData();
       setIsModalClosed(false);
     }
   }, [isModalClosed]);
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   const handleDelete = async (itemId: number) => {
-    await deleteCompany({ companyId: itemId });
-    fetchData();
+    const deleteData = async () => {
+      await mutation.mutateAsync({ companyId: itemId });
+      companies.refetch();
+    };
+    deleteData();
   };
 
   const handleNavigate = async (itemId: number) => {
     navigate(`/main/${itemId}`);
   };
+
   return (
     <>
       <div className={styles.headerCompany}>Manage Companies</div>
       <div className={styles.container}>
-        {companies &&
-          companies.map((company) => (
+        {companies.data &&
+          companies.data.map((company) => (
             <CompanyItem
               key={company.id}
               company={company}

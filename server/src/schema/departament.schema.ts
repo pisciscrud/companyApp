@@ -1,26 +1,24 @@
-import { number, object, string, TypeOf } from 'zod';
+import { number, object, string, TypeOf } from "zod";
 
 export const CreateDepartamentSchema = object({
   name: string({
-    required_error: 'Name is required',
+    required_error: "Name is required",
   }),
   companyId: number({
-    required_error: 'Company is required',
+    required_error: "Company is required",
   }),
   description: string({
-    required_error: 'Descriprion is required',
+    required_error: "Descriprion is required",
   }),
 });
 
 export const paramDepartament = object({
-  idDepartament: number(),
-})
+  departmentId: number(),
+});
 
-export const paramCompany = object(
-  {
-    idCompany:number()
-  }
-)
+export const paramCompany = object({
+  companyId: number(),
+});
 
 export const UpdateDepartamentSchema = object({
   paramDepartament,
@@ -38,5 +36,7 @@ export const filterQuery = object({
 export type CreateDepartamentInput = TypeOf<typeof CreateDepartamentSchema>;
 export type ParamsInput = TypeOf<typeof paramDepartament>;
 export type ParamInput = TypeOf<typeof paramCompany>;
-export type UpdateDepartamentInput = TypeOf<typeof UpdateDepartamentSchema>['body'];
+export type UpdateDepartamentInput = TypeOf<
+  typeof UpdateDepartamentSchema
+>["body"];
 export type FilterQueryInput = TypeOf<typeof filterQuery>;
