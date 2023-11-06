@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
   GetDepartmnetsOutput,
-  GetInfoAboutEmployeeOutput,
+  EmployeeOutput,
   Position,
 } from "../../api/types";
 import { trpc } from "../../utils/trpcClient";
@@ -14,11 +14,11 @@ import { trpc } from "../../utils/trpcClient";
 interface UpdateEmployeeModalProps {
   showModal: boolean;
   handleClose: () => void;
-  employee: Required<GetInfoAboutEmployeeOutput>;
+  employee: Required<EmployeeOutput>;
   departments: GetDepartmnetsOutput;
 }
 
-const schema = z.object({
+const UPDATE_EMPLOYEE_FORM_SCHEMA = z.object({
   firstName: z
     .string()
     .min(2, { message: "First name is too short" })
@@ -30,7 +30,7 @@ const schema = z.object({
   position: z.enum([Position.EMPLOYEE, Position.HEAD]),
   departmentId: z.string(),
 });
-type FormSchema = z.infer<typeof schema>;
+type FormSchema = z.infer<typeof UPDATE_EMPLOYEE_FORM_SCHEMA>;
 
 const UpdateEmployeeModal: React.FC<UpdateEmployeeModalProps> = ({
   showModal,
@@ -43,7 +43,9 @@ const UpdateEmployeeModal: React.FC<UpdateEmployeeModalProps> = ({
     handleSubmit,
 
     formState: { isSubmitting, errors },
-  } = useForm<FormSchema>({ resolver: zodResolver(schema) });
+  } = useForm<FormSchema>({
+    resolver: zodResolver(UPDATE_EMPLOYEE_FORM_SCHEMA),
+  });
 
   const [currentFirstName, setCurrentFirstName] = useState(employee.firstName);
   const [currentLastName, setCurrentLastName] = useState(employee.lastName);
@@ -56,7 +58,7 @@ const UpdateEmployeeModal: React.FC<UpdateEmployeeModalProps> = ({
 
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
-      const validationResult = schema.safeParse(formData);
+      const validationResult = UPDATE_EMPLOYEE_FORM_SCHEMA.safeParse(formData);
       if (validationResult.success) {
         await mutationUpdateEmployee.mutateAsync({
           params: {

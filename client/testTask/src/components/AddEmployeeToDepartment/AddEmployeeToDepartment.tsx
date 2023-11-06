@@ -7,7 +7,7 @@ import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { trpc } from "../../utils/trpcClient";
 
-const schema = z.object({
+const ADD_EMPLOYEE_FORM_SCHEMA = z.object({
   firstName: z
     .string()
     .min(2, { message: "First name is too short" })
@@ -19,7 +19,7 @@ const schema = z.object({
   position: z.enum([Position.EMPLOYEE, Position.HEAD]),
 });
 
-type AddEmployeeFormValues = z.infer<typeof schema>;
+type AddEmployeeFormValues = z.infer<typeof ADD_EMPLOYEE_FORM_SCHEMA>;
 
 interface AddEmployeeModalProps {
   showModal: boolean;
@@ -35,7 +35,7 @@ const AddEmployeeToDepartment: React.FC<AddEmployeeModalProps> = ({
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<AddEmployeeFormValues>({ resolver: zodResolver(schema) });
+  } = useForm<AddEmployeeFormValues>({ resolver: zodResolver(ADD_EMPLOYEE_FORM_SCHEMA) });
 
   const { departmentId } = useParams<{ departmentId: string }>();
 
@@ -48,7 +48,7 @@ const AddEmployeeToDepartment: React.FC<AddEmployeeModalProps> = ({
 
   const onSubmit: SubmitHandler<AddEmployeeFormValues> = async (formData) => {
     try {
-      const validationResult = schema.safeParse(formData);
+      const validationResult = ADD_EMPLOYEE_FORM_SCHEMA.safeParse(formData);
       if (!departmentId) return;
 
       if (validationResult.success) {

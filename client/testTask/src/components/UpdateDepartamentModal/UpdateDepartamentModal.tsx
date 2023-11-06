@@ -3,16 +3,16 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { z } from "zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GetDepartmnetOutput } from "../../api/types";
+import { DepartmnetOutput } from "../../api/types";
 import { trpc } from "../../utils/trpcClient";
 
 interface AddCompanyModalProps {
   showModal: boolean;
   handleClose: () => void;
-  updateInfo: Required<GetDepartmnetOutput>;
+  updateInfo: Required<DepartmnetOutput>;
 }
 
-const schema = z.object({
+const UPDATE_DEPARTMNET_FORM_SCHEMA = z.object({
   name: z
     .string()
     .min(2, { message: "Name of company is too short" })
@@ -22,7 +22,7 @@ const schema = z.object({
     .min(2, { message: "Description of company is too short" })
     .max(80, "Description of company is too long"),
 });
-type FormSchema = z.infer<typeof schema>;
+type FormSchema = z.infer<typeof UPDATE_DEPARTMNET_FORM_SCHEMA>;
 
 const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
   showModal,
@@ -33,7 +33,9 @@ const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormSchema>({ resolver: zodResolver(schema) });
+  } = useForm<FormSchema>({
+    resolver: zodResolver(UPDATE_DEPARTMNET_FORM_SCHEMA),
+  });
 
   const [currentName, setCurrentName] = useState(updateInfo.name);
   const [currentDescription, setCurrentDescription] = useState(
@@ -45,7 +47,8 @@ const UpdateDepartamentModal: React.FC<AddCompanyModalProps> = ({
 
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
-      const validationResult = schema.safeParse(formData);
+      const validationResult =
+        UPDATE_DEPARTMNET_FORM_SCHEMA.safeParse(formData);
 
       if (validationResult.success) {
         await mutationUpdateDepartment.mutateAsync({

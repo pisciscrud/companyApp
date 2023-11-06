@@ -4,11 +4,13 @@ import { CompanyItem, AddCompanyModal } from "../../components/index";
 import { PlusCircle } from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { trpc } from "../../utils/trpcClient";
+import { CompanyOutput } from "../../api/types";
+
 
 const CompaniesPage: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [isModalClosed, setIsModalClosed] = useState(false);
-  const companies = trpc.company.allCompanies.useQuery();
+  const companies  = trpc.company.allCompanies.useQuery();
   const mutation = trpc.company.deleteCompany.useMutation();
   const navigate = useNavigate();
 
@@ -48,7 +50,7 @@ const CompaniesPage: React.FC = () => {
       <div className={styles.headerCompany}>Manage Companies</div>
       <div className={styles.container}>
         {companies.data &&
-          companies.data.map((company) => (
+          companies.data.map((company : CompanyOutput) => (
             <CompanyItem
               key={company.id}
               company={company}

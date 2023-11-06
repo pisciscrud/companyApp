@@ -9,7 +9,7 @@ interface AddCompanyModalProps {
   handleClose: () => void;
 }
 
-const schema = z.object({
+const ADD_COMPANY_FORM_SCHEMA = z.object({
   name: z
     .string()
     .min(2, { message: "Name of company is too short" })
@@ -19,7 +19,7 @@ const schema = z.object({
     .min(2, { message: "Description of company is too short" })
     .max(80, "Description of company is too long"),
 });
-type FormSchema = z.infer<typeof schema>;
+type FormSchema = z.infer<typeof ADD_COMPANY_FORM_SCHEMA>;
 
 const AddCompanyModal: React.FC<AddCompanyModalProps> = ({
   showModal,
@@ -30,13 +30,13 @@ const AddCompanyModal: React.FC<AddCompanyModalProps> = ({
     handleSubmit,
     resetField,
     formState: { isSubmitting, errors, isDirty },
-  } = useForm<FormSchema>({ resolver: zodResolver(schema) });
+  } = useForm<FormSchema>({ resolver: zodResolver(ADD_COMPANY_FORM_SCHEMA) });
 
   const mutation = trpc.company.addCompany.useMutation();
 
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
-      const validationResult = schema.safeParse(formData);
+      const validationResult = ADD_COMPANY_FORM_SCHEMA.safeParse(formData);
 
       if (validationResult.success) {
         await mutation.mutateAsync(formData);

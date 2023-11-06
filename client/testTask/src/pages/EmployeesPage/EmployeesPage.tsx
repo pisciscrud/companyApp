@@ -11,6 +11,7 @@ import { Trash, PencilSquare } from "react-bootstrap-icons";
 import { useDebounce } from "@uidotdev/usehooks";
 import { Form, FormControl } from "react-bootstrap";
 import { trpc } from "../../utils/trpcClient";
+import { EmployeeOutput } from "../../api/types";
 
 const EmployeeTable: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -120,58 +121,62 @@ const EmployeeTable: React.FC = () => {
             {employees &&
               departments.data &&
               employees.data &&
-              employees.data.map((employee, index) => (
-                <tr key={employee.id}>
-                  <td>
-                    <Tooltip text="Manage employee">
-                      <a
-                        key={employee.id}
-                        href={`employees/info/${employee.id}`}
-                        className={styles.linkToEmployee}
+              employees.data.map(
+                (employee: Required<EmployeeOutput>, index: number) => (
+                  <tr key={employee.id}>
+                    <td>
+                      <Tooltip text="Manage employee">
+                        <a
+                          key={employee.id}
+                          href={`employees/info/${employee.id}`}
+                          className={styles.linkToEmployee}
+                        >
+                          {employee.firstName}
+                        </a>
+                      </Tooltip>
+                    </td>
+                    <td>{employee.lastName}</td>
+                    <td>{employee.position}</td>
+                    <td>{new Date(employee.createdAt).toLocaleString()}</td>
+                    <td>{new Date(employee.updatedAt).toLocaleString()}</td>
+                    <td>
+                      <Tooltip text="Manage department">
+                        <a
+                          key={employee.id}
+                          href={`departaments/info/${employee.department?.id}`}
+                          className={styles.linkToEmployee}
+                        >
+                          {employee.department?.name}
+                        </a>
+                      </Tooltip>
+                    </td>
+                    <td>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={() => handleDeleteEmployee(employee.id)}
                       >
-                        {employee.firstName}
-                      </a>
-                    </Tooltip>
-                  </td>
-                  <td>{employee.lastName}</td>
-                  <td>{employee.position}</td>
-                  <td>{new Date(employee.createdAt).toLocaleString()}</td>
-                  <td>{new Date(employee.updatedAt).toLocaleString()}</td>
-                  <td>
-                    <Tooltip text="Manage department">
-                      <a
-                        key={employee.id}
-                        href={`departaments/info/${employee.department?.id}`}
-                        className={styles.linkToEmployee}
+                        <Trash />
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className={styles.deleteButton}
+                        onClick={() => handleOpenModalUpdateEmployee(index)}
                       >
-                        {employee.department?.name}
-                      </a>
-                    </Tooltip>
-                  </td>
-                  <td>
-                    <button
-                      className={styles.deleteButton}
-                      onClick={() => handleDeleteEmployee(employee.id)}
-                    >
-                      <Trash />
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className={styles.deleteButton}
-                      onClick={() => handleOpenModalUpdateEmployee(index)}
-                    >
-                      <PencilSquare />
-                    </button>
-                    <UpdateEmployeeModal
-                      showModal={modalStates[index]}
-                      handleClose={() => handleCloseModalUpdateEmployee(index)}
-                      employee={employee}
-                      departments={departments.data}
-                    />
-                  </td>
-                </tr>
-              ))}
+                        <PencilSquare />
+                      </button>
+                      <UpdateEmployeeModal
+                        showModal={modalStates[index]}
+                        handleClose={() =>
+                          handleCloseModalUpdateEmployee(index)
+                        }
+                        employee={employee}
+                        departments={departments.data}
+                      />
+                    </td>
+                  </tr>
+                )
+              )}
           </tbody>
         </Table>
         {departments.data && (

@@ -1,6 +1,6 @@
 import { number, object, string, TypeOf } from "zod";
 
-export const CreateDepartamentSchema = object({
+export const CREATE_DEPARTMENT_SCHEMA = object({
   name: string({
     required_error: "Name is required",
   }),
@@ -20,7 +20,7 @@ export const paramCompany = object({
   companyId: number(),
 });
 
-export const UpdateDepartamentSchema = object({
+export const UPDATE_DEPARTMENT_SCHEMA = object({
   paramDepartament,
   body: object({
     name: string(),
@@ -33,10 +33,10 @@ export const filterQuery = object({
   page: number().default(10),
 });
 
-export type CreateDepartamentInput = TypeOf<typeof CreateDepartamentSchema>;
+export type CreateDepartamentInput = TypeOf<typeof CREATE_DEPARTMENT_SCHEMA>;
 export type ParamsInput = TypeOf<typeof paramDepartament>;
 export type ParamInput = TypeOf<typeof paramCompany>;
 export type UpdateDepartamentInput = TypeOf<
-  typeof UpdateDepartamentSchema
+  typeof UPDATE_DEPARTMENT_SCHEMA
 >["body"];
 export type FilterQueryInput = TypeOf<typeof filterQuery>;

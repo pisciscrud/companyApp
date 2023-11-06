@@ -4,6 +4,7 @@ import { AddEmployeeToDepartment, Tooltip } from "../../components";
 import { Button } from "react-bootstrap";
 import styles from "./DepartmentPage.module.css";
 import { trpc } from "../../utils/trpcClient";
+import { EmployeeOutput } from "../../api/types";
 
 const DepartmentPage = () => {
   const { departmentId } = useParams<{ departmentId: string }>();
@@ -39,8 +40,8 @@ const DepartmentPage = () => {
         <div>
           <h3>Count of employees: {department.data.employees?.length}</h3>
           <ul>
-            {department.data.employees?.map((employee) => (
-              <Tooltip text="Manage employee" key={employee.id}>  
+            {department.data.employees?.map((employee: EmployeeOutput) => (
+              <Tooltip text="Manage employee" key={employee.id}>
                 <a
                   key={employee.id}
                   href={`/main/${department.data.companyId}/employees/info/${employee.id}`}

@@ -1,7 +1,7 @@
 import { Position } from "@prisma/client";
 import { z, number, object, string, TypeOf } from "zod";
 
-export const CreateEmployeeSchema = object({
+export const CREATE_EMPLOYEE_SCHEMA = object({
   firstName: string({
     required_error: "Name is required",
   }),
@@ -23,7 +23,7 @@ export const paramName = object({
   name: string(),
 });
 
-export const UpdateEmployeeSchema = object({
+export const UPDATE_EMPLOYEE_SCHEMA = object({
   params: employeeParams,
   body: object({
     firstName: string(),
@@ -33,10 +33,7 @@ export const UpdateEmployeeSchema = object({
   }).partial(),
 });
 
-
-
-export type CreateEmployeeInput = TypeOf<typeof CreateEmployeeSchema>;
+export type CreateEmployeeInput = TypeOf<typeof CREATE_EMPLOYEE_SCHEMA>;
 export type ParamsInput = TypeOf<typeof employeeParams>;
 export type ParamInputName = TypeOf<typeof paramName>;
-export type UpdateEmployeeInput = TypeOf<typeof UpdateEmployeeSchema>["body"];
-
+export type UpdateEmployeeInput = TypeOf<typeof UPDATE_EMPLOYEE_SCHEMA>["body"];

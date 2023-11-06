@@ -11,7 +11,7 @@ interface AddDepartmentModalProps {
   id?: string;
 }
 
-const schema = z.object({
+const ADD_DEPARTMENT_SCHEMA = z.object({
   name: z
     .string()
     .min(2, { message: "Name of departament is min 2 symbols" })
@@ -21,7 +21,7 @@ const schema = z.object({
     .min(2, { message: "Description of departament is min 2 symbols" })
     .max(80, "Description of departament is max 80 symbols"),
 });
-type FormSchema = z.infer<typeof schema>;
+type FormSchema = z.infer<typeof ADD_DEPARTMENT_SCHEMA>;
 
 const AddDepartamentModal: React.FC<AddDepartmentModalProps> = ({
   showModal,
@@ -34,12 +34,12 @@ const AddDepartamentModal: React.FC<AddDepartmentModalProps> = ({
     setFocus,
     resetField,
     formState: { isSubmitting, errors, isDirty },
-  } = useForm<FormSchema>({ resolver: zodResolver(schema) });
+  } = useForm<FormSchema>({ resolver: zodResolver(ADD_DEPARTMENT_SCHEMA) });
   const mutationAddDepartament =
     trpc.departament.addNewDeraptament.useMutation();
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
-      const validationResult = schema.safeParse(formData);
+      const validationResult = ADD_DEPARTMENT_SCHEMA.safeParse(formData);
 
       if (validationResult.success) {
         if (!id) return;

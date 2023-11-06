@@ -1,10 +1,10 @@
 import { DepartamentController } from "../controllers/departament.controller";
 import { router, adminProcedure } from "../trpc";
 import {
-  CreateDepartamentSchema,
+  CREATE_DEPARTMENT_SCHEMA,
   paramCompany,
   paramDepartament,
-  UpdateDepartamentSchema,
+  UPDATE_DEPARTMENT_SCHEMA,
 } from "../schema/departament.schema";
 
 export const departamentRouter = router({
@@ -15,7 +15,7 @@ export const departamentRouter = router({
       DepartamentController.getDepartamentsOfCompany({ paramsInput: input })
     ),
   addNewDeraptament: adminProcedure
-    .input(CreateDepartamentSchema)
+    .input(CREATE_DEPARTMENT_SCHEMA)
     .mutation(({ input }) => DepartamentController.addDepartament({ input })),
   findLargestDepartaments: adminProcedure
     .input(paramCompany)
@@ -28,7 +28,7 @@ export const departamentRouter = router({
       DepartamentController.deleteDepartament({ paramsInput: input })
     ),
   updateDepartamnet: adminProcedure
-    .input(UpdateDepartamentSchema)
+    .input(UPDATE_DEPARTMENT_SCHEMA)
     .mutation(({ input }) =>
       DepartamentController.updateDepartament({
         paramsInput: input.paramDepartament,

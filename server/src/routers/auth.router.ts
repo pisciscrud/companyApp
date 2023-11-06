@@ -1,9 +1,9 @@
 import { AuthController } from "../controllers";
 import { baseProcedure, router } from "../trpc";
-import { SignInSchema } from "../schema/auth.schema";
+import { LOGIN_FORM_SCHEMA } from "../schema/auth.schema";
 
 
 export const authRouter = router({
-    signIn: baseProcedure.input(SignInSchema).mutation(({input})=>AuthController.signIn({input})),
+    signIn: baseProcedure.input(LOGIN_FORM_SCHEMA).mutation(({input})=>AuthController.signIn({input})),
 
 })

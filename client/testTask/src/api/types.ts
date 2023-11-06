@@ -21,8 +21,9 @@ export type GetEmployeesByNameOutput =
 export type GetFiveNewestEmployeesOfCompanyOutput =
   RouterOutputs["employee"]["getFiveNewestEmployeesOfCompany"];
 
-export type GetInfoAboutEmployeeOutput =
-  RouterOutputs["employee"]["findInfoAboutEmployee"];
+export type AuthOutput = RouterOutputs["auth"]["signIn"];
+
+export type EmployeeOutput = RouterOutputs["employee"]["findInfoAboutEmployee"];
 
 export type CompanyCreateOptions = RouterInputs["company"]["addCompany"];
 export type CompanyDeleteOptions = RouterInputs["company"]["deleteCompany"];
@@ -44,7 +45,7 @@ export type deleteDepartamentInput =
   RouterInputs["departament"]["deleteDepartament"];
 export type GetDepartmnetsOutput =
   RouterOutputs["departament"]["allDepartamentsOfCompany"];
-export type GetDepartmnetOutput =
+export type DepartmnetOutput =
   RouterOutputs["departament"]["findInfoAboutDepartament"];
 export type GetFiveLargestDepartamentsOutput =
   RouterOutputs["departament"]["findLargestDepartaments"];

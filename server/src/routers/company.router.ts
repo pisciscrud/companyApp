@@ -1,7 +1,7 @@
 import { CompanyController } from "../controllers";
 import {
-  CreateCompanySchema,
-  UpdateCompanySchema,
+  CREATE_COMPANY_SCHEMA,
+  UPDATE_COMPANY_SCHEMA,
   companyParams,
 } from "../schema/company.schema";
 import { router, adminProcedure } from "../trpc";
@@ -9,10 +9,10 @@ import { router, adminProcedure } from "../trpc";
 export const companyRouter = router({
   allCompanies: adminProcedure.query(CompanyController.getAll),
   addCompany: adminProcedure
-    .input(CreateCompanySchema)
+    .input(CREATE_COMPANY_SCHEMA)
     .mutation(({ input }) => CompanyController.addCompany({ input })),
   updateCompany: adminProcedure
-    .input(UpdateCompanySchema)
+    .input(UPDATE_COMPANY_SCHEMA)
     .mutation(({ input }) =>
       CompanyController.updateCompany({
         paramsInput: input.params,

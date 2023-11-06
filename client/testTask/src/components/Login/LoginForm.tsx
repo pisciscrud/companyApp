@@ -6,12 +6,12 @@ import { useNavigate } from "react-router";
 import { z } from "zod";
 import { trpc } from "../../utils/trpcClient";
 
-const LoginFormSchema = z.object({
+const LOGIN_FORM_SCHEMA = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
-type LoginFormProps = z.infer<typeof LoginFormSchema>;
+type LoginFormProps = z.infer<typeof LOGIN_FORM_SCHEMA>;
 
 const Login: React.FC = () => {
   const {
@@ -21,19 +21,16 @@ const Login: React.FC = () => {
   } = useForm<LoginFormProps>();
 
   const [error, setError] = useState<{ message: string } | null>(null);
-  const mutation = trpc.auth.signIn.useMutation({
-    onSuccess: (response) => {
-      localStorage.setItem(
-        "token",
-        (response.data.data as { jwt: string }).jwt
-      );
-    },
-  });
+  const mutation = trpc.auth.signIn.useMutation();
+
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<LoginFormProps> = async (formData) => {
     try {
-      mutation.mutate(formData);
-      navigate("/companies");
+      const result = await mutation.mutateAsync(formData);
+      if (result) {
+        localStorage.setItem("token", result.jwt);
+        navigate("/companies");
+      }
     } catch (err: any) {
       setError(err);
     }

@@ -9,12 +9,7 @@ export class AuthController {
   }) {
     try {
       const data = await AuthService.signIn(input.email, input.password);
-      return {
-        status: "success",
-        data: {
-          data,
-        },
-      };
+      return data;
     } catch (error: any) {
       if (error instanceof TRPCError) throw error;
 

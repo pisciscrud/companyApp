@@ -5,7 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   GetDepartmnetsOutput,
-  GetDepartmnetOutput,
+  DepartmnetOutput,
   Position,
 } from "../../api/types";
 
@@ -16,7 +16,7 @@ interface AddEmployeeModalProps {
 }
 import { trpc } from "../../utils/trpcClient";
 
-const schema = z.object({
+const ADD_EMPLOYEE_SCHEMA = z.object({
   firstName: z
     .string()
     .min(2, { message: "First name is too short" })
@@ -28,7 +28,7 @@ const schema = z.object({
   position: z.enum([Position.EMPLOYEE, Position.HEAD]),
   departmentId: z.string(),
 });
-type FormSchema = z.infer<typeof schema>;
+type FormSchema = z.infer<typeof ADD_EMPLOYEE_SCHEMA>;
 
 const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
   showModal,
@@ -41,7 +41,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
     formState: { errors },
     resetField,
     reset,
-  } = useForm<FormSchema>({ resolver: zodResolver(schema) });
+  } = useForm<FormSchema>({ resolver: zodResolver(ADD_EMPLOYEE_SCHEMA) });
 
   const [currentFirstName, setCurrentFirstName] = useState("");
   const [currentLastName, setCurrentLastName] = useState("");
@@ -54,7 +54,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
 
   const onSubmit: SubmitHandler<FormSchema> = async (formData) => {
     try {
-      const validationResult = schema.safeParse(formData);
+      const validationResult = ADD_EMPLOYEE_SCHEMA.safeParse(formData);
       if (validationResult.success) {
         await mutationAddEmployee.mutateAsync({
           ...formData,
@@ -148,7 +148,7 @@ const AddEmployeeModal: React.FC<AddEmployeeModalProps> = ({
               onChange={(e) => setCurrentDepartment(+e.target.value)}
               isInvalid={!!errors.departmentId}
             >
-              {departments.map((department: Required<GetDepartmnetOutput>) => (
+              {departments.map((department: Required<DepartmnetOutput>) => (
                 <option key={department.id} value={department.id}>
                   {department.name}
                 </option>

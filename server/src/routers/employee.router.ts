@@ -1,7 +1,7 @@
 import { EmployeeController } from "../controllers/employee.controller";
 import {
-  CreateEmployeeSchema,
-  UpdateEmployeeSchema,
+  CREATE_EMPLOYEE_SCHEMA,
+  UPDATE_EMPLOYEE_SCHEMA,
   employeeParams,
   paramName,
 } from "../schema/employee.schema";
@@ -11,10 +11,10 @@ import { companyParams } from "../schema/company.schema";
 export const employeeRouter = router({
   allEmployees: adminProcedure.query(EmployeeController.getAll),
   addEmployee: adminProcedure
-    .input(CreateEmployeeSchema)
+    .input(CREATE_EMPLOYEE_SCHEMA)
     .mutation(({ input }) => EmployeeController.addNewEmployee({ input })),
   updateEmployee: adminProcedure
-    .input(UpdateEmployeeSchema)
+    .input(UPDATE_EMPLOYEE_SCHEMA)
     .mutation(({ input }) =>
       EmployeeController.updateEmployee({
         paramsInput: input.params,

@@ -1,6 +1,6 @@
 import { number, object, string, TypeOf } from "zod";
 
-export const CreateCompanySchema = object({
+export const CREATE_COMPANY_SCHEMA = object({
   name: string({
     required_error: "Name is required",
   }),
@@ -13,7 +13,7 @@ export const companyParams = object({
   companyId: number(),
 });
 
-export const UpdateCompanySchema = object({
+export const UPDATE_COMPANY_SCHEMA = object({
   params: companyParams,
   body: object({
     name: string(),
@@ -21,8 +21,6 @@ export const UpdateCompanySchema = object({
   }).partial(),
 });
 
-
-
-export type CreateCompanyInput = TypeOf<typeof CreateCompanySchema>;
+export type CreateCompanyInput = TypeOf<typeof CREATE_COMPANY_SCHEMA>;
 export type ParamsInputCompany = TypeOf<typeof companyParams>;
-export type UpdateCompanyInput = TypeOf<typeof UpdateCompanySchema>["body"];
+export type UpdateCompanyInput = TypeOf<typeof UPDATE_COMPANY_SCHEMA>["body"];
